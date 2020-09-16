@@ -225,7 +225,7 @@ public class VertexWithNeighbors
 //            LatLon p1 = neighbors.get(i);
 //            LatLon p2 = neighbors.get(i + 1);
 //            SurfaceTriangle triangle = new SurfaceTriangle(node, p1, p2, "");
-//            perigon.add(triangle.interiorAngle().get(0));
+//            perigon.add(triangle.innerAngle().get(0));
 //        }
 
         // 格式化，6个数值

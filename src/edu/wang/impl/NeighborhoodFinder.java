@@ -84,12 +84,12 @@ public class NeighborhoodFinder
                 MiddleArcSurfaceTriangle mine = (MiddleArcSurfaceTriangle) cellNode.getCell();
                 contents.append(mine.getGeocode().getID()).append("\t");
 //                StringBuilder vertices = new StringBuilder();
-//                vertices.append(IO.formatDouble(Cons.latLonToVec4(mine.getTop())).);
+//                vertices.append(IO.formatDouble(Const.latLonToVec4(mine.getTop())).);
                 LatLon myCenter = mine.getCenter();
                 // 计算延伸度
-                double lengthA = LatLon.greatCircleDistance(myCenter, mine.getTop()).getRadians() * Cons.RADIUS;
-                double lengthB = LatLon.greatCircleDistance(myCenter, mine.getLeft()).getRadians() * Cons.RADIUS;
-                double lengthC = LatLon.greatCircleDistance(myCenter, mine.getRight()).getRadians() * Cons.RADIUS;
+                double lengthA = LatLon.greatCircleDistance(myCenter, mine.getTop()).getRadians() * Const.RADIUS;
+                double lengthB = LatLon.greatCircleDistance(myCenter, mine.getLeft()).getRadians() * Const.RADIUS;
+                double lengthC = LatLon.greatCircleDistance(myCenter, mine.getRight()).getRadians() * Const.RADIUS;
                 contents.append(IO.formatDouble(lengthA, 6)).append("\t");
                 contents.append(IO.formatDouble(lengthB, 6)).append("\t");
                 contents.append(IO.formatDouble(lengthC, 6)).append("\t");
@@ -106,7 +106,7 @@ public class NeighborhoodFinder
                     MiddleArcSurfaceTriangle other = (MiddleArcSurfaceTriangle) n.getCellNode().getCell();
                     LatLon otherCenter = other.getCenter();
                     tempContents.append(
-                        IO.formatDouble(LatLon.greatCircleDistance(myCenter, otherCenter).getRadians() * Cons.RADIUS,
+                        IO.formatDouble(LatLon.greatCircleDistance(myCenter, otherCenter).getRadians() * Const.RADIUS,
                             6)).append("\t");
 
                     if (n.getType() == 1)
@@ -135,6 +135,6 @@ public class NeighborhoodFinder
         double dis1 = LatLon.greatCircleDistance(p0, p1).getRadians();
         double dis2 = LatLon.greatCircleDistance(p0, p2).getRadians();
         double dis3 = LatLon.greatCircleDistance(p0, p3).getRadians();
-        return Math.min(dis1, Math.min(dis2, dis3)) * Cons.RADIUS;
+        return Math.min(dis1, Math.min(dis2, dis3)) * Const.RADIUS;
     }
 }

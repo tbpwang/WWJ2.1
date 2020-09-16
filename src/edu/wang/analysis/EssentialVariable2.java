@@ -91,9 +91,9 @@ public class EssentialVariable2
                 content = new StringBuilder();
                 content.append(tri.getGeocode().getID()).append("\t");
                 content.append(IO.formatDouble(tri.computeArea())).append("\t");
-                content.append(IO.formatDouble(tri.interiorAngle().get(0).degrees, 6)).append("\t");
-                content.append(IO.formatDouble(tri.interiorAngle().get(1).degrees, 6)).append("\t");
-                content.append(IO.formatDouble(tri.interiorAngle().get(2).degrees, 6)).append("\t");
+                content.append(IO.formatDouble(tri.innerAngle().get(0).degrees, 6)).append("\t");
+                content.append(IO.formatDouble(tri.innerAngle().get(1).degrees, 6)).append("\t");
+                content.append(IO.formatDouble(tri.innerAngle().get(2).degrees, 6)).append("\t");
                 content.append(IO.formatDouble(tri.edgeLengths().get(0))).append("\t");
                 content.append(IO.formatDouble(tri.edgeLengths().get(1))).append("\t");
                 content.append(IO.formatDouble(tri.edgeLengths().get(2))).append("\t");
@@ -105,7 +105,7 @@ public class EssentialVariable2
                 String vertexTxtName = "spPoint_" + level;
                 for (LatLon ver : vertices)
                 {
-                    Vec4 v = IO.latLonToVec4(ver).normalize3().multiply3(Cons.RADIUS);
+                    Vec4 v = IO.latLonToVec4(ver).normalize3().multiply3(Const.RADIUS);
                     String vecString = IO.formatDouble(v.getX(), 6) + "\t"
                         + IO.formatDouble(v.getY(), 6) + "\t"
                         + IO.formatDouble(v.getZ(), 6) + "\t";

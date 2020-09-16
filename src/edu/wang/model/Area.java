@@ -6,7 +6,7 @@
 
 package edu.wang.model;
 
-import edu.wang.io.Cons;
+import edu.wang.io.Const;
 import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.util.Logging;
 
@@ -35,7 +35,7 @@ public class Area
         double lbc = p2.distanceTo3(p3);
         double half = (lab + lac + lbc) / 2.0;
 
-        return Math.sqrt(half * (half - lab) * (half - lac) * (half - lbc)) * Math.pow(Cons.RADIUS, 2);
+        return Math.sqrt(half * (half - lab) * (half - lac) * (half - lbc)) * Math.pow(Const.RADIUS, 2);
     }
 
     public static double planeTriangleArea(Triangle triangle)

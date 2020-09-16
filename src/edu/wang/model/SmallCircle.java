@@ -39,7 +39,7 @@ public class SmallCircle extends GridEdge
         angle2 = LatLon.greatCircleDistance(relativePole, last);
         double dAngle = IO.check(Math.abs(angle1.subtract(angle2).radians));
 //        double dtest = Math.abs(angle1.subtract(angle2).degrees);
-        if (dAngle > Cons.EPSILON)
+        if (dAngle > Const.EPSILON)
         {
             String message = Logging.getMessage("ErrorSmallCirclePole:小圆弧的相对极点错误！");
             Logging.logger().severe(message);
@@ -84,7 +84,7 @@ public class SmallCircle extends GridEdge
         angle1 = LatLon.greatCircleDistance(relativePole, getFirst().latLon);
         angle2 = LatLon.greatCircleDistance(relativePole, getLast().latLon);
         double dAngle = IO.check(Math.abs(angle1.subtract(angle2).radians));
-        if (dAngle > Cons.EPSILON)
+        if (dAngle > Const.EPSILON)
         {
             String message = Logging.getMessage("ErrorSmallCirclePole:小圆弧的相对极设置错误！");
             Logging.logger().severe(message);
@@ -135,7 +135,7 @@ public class SmallCircle extends GridEdge
             return Double.NaN;
         double r = IO.check(getArcRadius());
 
-        if (r <= Cons.EPSILON)
+        if (r <= Const.EPSILON)
         {
             return 0.0;
         }

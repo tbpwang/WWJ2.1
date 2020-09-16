@@ -6,7 +6,7 @@
 
 package edu.wang.model;
 
-import edu.wang.io.Cons;
+import edu.wang.io.Const;
 import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.util.Logging;
 
@@ -60,9 +60,9 @@ public class Perimeter
             throw new IllegalArgumentException(msg);
         }
         List<Double> edgeList = new ArrayList<>(3);
-        edgeList.add(LatLon.greatCircleDistance(a, b).getRadians() * Cons.RADIUS);
-        edgeList.add(LatLon.greatCircleDistance(a, c).getRadians() * Cons.RADIUS);
-        edgeList.add(LatLon.greatCircleDistance(c, b).getRadians() * Cons.RADIUS);
+        edgeList.add(LatLon.greatCircleDistance(a, b).getRadians() * Const.RADIUS);
+        edgeList.add(LatLon.greatCircleDistance(a, c).getRadians() * Const.RADIUS);
+        edgeList.add(LatLon.greatCircleDistance(c, b).getRadians() * Const.RADIUS);
         return edgeList;
     }
 

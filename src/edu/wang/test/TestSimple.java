@@ -22,14 +22,24 @@ public class TestSimple
 {
     public static void main(String[] args)
     {
-        double radius = Cons.RADIUS;
+        SurfaceTriangle qtm = new QTMTriangle(LatLon.fromDegrees(90,0),LatLon.ZERO,LatLon.fromDegrees(0,90),"A");
+        System.out.println("QTMArea\t" + ((QTMTriangle) qtm).getUnitArea());
+        SurfaceTriangle qtm1 = new QTMTriangle(LatLon.fromDegrees(90,0),LatLon.ZERO,LatLon.fromDegrees(0.5,90),"A");
+        System.out.println("qtmArea\t" +qtm1.getUnitArea());
+        System.out.println(((QTMTriangle) qtm).isStrictQTM());
+        double radius = Const.RADIUS;
         double little = 0.0001;
         System.out.println("0.0001度对应长度：" + little / 180 * Math.PI * radius);
+        System.out.println("rint:test\t" + Math.rint(little / 180 * Math.PI ));
+        System.out.println("rint:test\t" + Math.rint(little / 180 * Math.PI * radius));
+        System.out.println("rint:test\t" + Math.rint(5*little / 180 * Math.PI * radius));
         System.out.println("1E-6对应长度：" + 1E-6 * radius);
+        System.out.println("rint:test\t"+Math.rint(1E-6));
+        System.out.println("rint:test\t"+Math.rint(1E-6*radius));
         for (int i = 0; i < 100000; i++)
         {
             double x = i / 1000.0;
-            if (IO.check(Math.abs(x - Math.sin(x))) <= Cons.EPSILON)
+            if (IO.check(Math.abs(x - Math.sin(x))) <= Const.EPSILON)
             {
                 System.out.println("i = " + i);
 
@@ -50,7 +60,7 @@ public class TestSimple
         LatLon px2 = LatLon.interpolateRhumb(0.5, p1, p2);
         System.out.println("px2: " + px2);
         QTMTriangle triangle = new QTMTriangle(p0, p1, p2, new Geocode(""));
-        List<Angle> angles = triangle.interiorAngle();
+        List<Angle> angles = triangle.innerAngle();
         System.out.println("Angle: ");
         for (Angle angle :
             angles)
@@ -82,14 +92,14 @@ public class TestSimple
         Vec4 ba = IO.check(vec4B.cross3(vec4A)).normalize3();
         System.out.println("BA: " + IO.vec4ToLatLon(ba));
         Angle angle = ba.angleBetween3(vec4);
-//        double rds= Math.acos(Cons.check(ba.dot3(vec4)));
+//        double rds= Math.acos(Const.check(ba.dot3(vec4)));
         System.out.println("degree = " + angle.degrees);
         Vec4 ac = vec4A.cross3(vec4C);
         System.out.println("ac: " + IO.vec4ToLatLon(ac));
         angle = ac.angleBetween3(vec4);
         System.out.println("degree = " + angle.degrees);
         System.out.println("-: " + vec4.angleBetween3(ac));
-        System.out.println("Epsilon = " + IO.formatDouble(Cons.EPSILON, 6));
+        System.out.println("Epsilon = " + IO.formatDouble(Const.EPSILON, 6));
 
         LatLon neglat = LatLon.fromDegrees(-30, 20);
         System.out.println("neglat = " + neglat);
@@ -97,7 +107,7 @@ public class TestSimple
         System.out.println("lat = " + lat);
 
 //        SongTriangle songTriangle = new SongTriangle(pp,LatLon.fromDegrees(0,0),LatLon.fromDegrees(0,90),"");
-//        System.out.println("Interior:\t" + songTriangle.interiorAngle());
+//        System.out.println("Interior:\t" + songTriangle.innerAngle());
 
 //        SurfaceTriangle st = new SurfaceTriangle(p0,p1,p2,"");
 //        System.out.println("STArea = " + st.computeArea());
@@ -127,7 +137,7 @@ public class TestSimple
 ////        LatLon latLon = LatLon.intersectionWithMeridian();
 //
 //        SurfaceTriangle triangle1 = new SurfaceTriangle(tp3, tp1, tp2, "");
-//        double d1 = LatLon.greatCircleDistance(tp1, tp2).radians * Cons.radius;
+//        double d1 = LatLon.greatCircleDistance(tp1, tp2).radians * Const.radius;
 //        double d2 = Distance.distance(tp1, tp2);
 //        System.out.println("GCDist = " + d1);
 //        System.out.println("Dist = " + d2);
@@ -139,7 +149,7 @@ public class TestSimple
 //        double tp12tp2 = init2tp2 - init2tp1;
 //        System.out.println("tp12tp2 = " + tp12tp2);
 //        System.out.println("InnerAngle&intersectAngle============");
-//        System.out.println("interior" + triangle1.interiorAngle());
+//        System.out.println("interior" + triangle1.innerAngle());
 //        double an1 = LatLon.greatCircleAzimuth(tp1, tp2).degrees;
 //        double an2 = Azimuth.azimuth(tp1, tp2).degrees;
 //        System.out.println("GCAzimuth1-2 = " + an1);
@@ -148,9 +158,9 @@ public class TestSimple
 //        System.out.println("1-3: " + LatLon.greatCircleAzimuth(tp1, tp3));
 //        System.out.println("Area: " + triangle1.getUnitArea());
 //        System.out.println();
-//        LatLon insert1 = LatLon.greatCircleEndPosition(tp1, 0.6, 0.5 * Cons.radius);
-//        LatLon insert2 = LatLon.rhumbEndPosition(tp1, 0.6, 0.5 * Cons.radius);
-//        //LatLon insert3 = LatLon.linearEndPosition(tp1,0.6,0.5*Cons.radius);
+//        LatLon insert1 = LatLon.greatCircleEndPosition(tp1, 0.6, 0.5 * Const.radius);
+//        LatLon insert2 = LatLon.rhumbEndPosition(tp1, 0.6, 0.5 * Const.radius);
+//        //LatLon insert3 = LatLon.linearEndPosition(tp1,0.6,0.5*Const.radius);
 //        System.out.println("GCE = " + insert1);
 //        System.out.println("rhE = " + insert2);
 //
@@ -176,9 +186,9 @@ public class TestSimple
 //            planeAreas.add(Area.planeTriangleArea(v1, v2, v3));
 //            planeEdges.add(Perimeter.triangleEdges(v1, v2, v3));
 //            LatLon p1, p2, p3;
-//            p1 = Cons.vec4ToLatLon(v1);
-//            p2 = Cons.vec4ToLatLon(v2);
-//            p3 = Cons.vec4ToLatLon(v3);
+//            p1 = Const.vec4ToLatLon(v1);
+//            p2 = Const.vec4ToLatLon(v2);
+//            p3 = Const.vec4ToLatLon(v3);
 //            spTriangles.add(new MiddleArcSurfaceTriangle(p1, p2, p3, new Geocode()));
 //            sphericalEdges.add(Perimeter.sphericalTriangleEdge(p1, p2, p3));
 //            sphericalAreas.add(Area.sphericalTriangleArea(p1, p2, p3));
@@ -198,7 +208,7 @@ public class TestSimple
 //        d1 = LatLon.linearDistance(fstSecMiddle, fstA).radians;
 //        d2 = LatLon.linearDistance(fstSecMiddle, fstB).radians;
 //        double d3 = LatLon.linearDistance(fstSecMiddle, fstC).radians;
-//        double middleDistance = Math.min(Math.min(d1, d2), d3) * Cons.radius;
+//        double middleDistance = Math.min(Math.min(d1, d2), d3) * Const.radius;
 //        ///IO.write(folderName,"elong_0",String.valueOf(middleDistance));
 //
 //        for (int i = 0; i < capacity; i++)
@@ -210,9 +220,9 @@ public class TestSimple
 //            left = triangle.getLeft();
 //            right = triangle.getRight();
 //            // elong
-//            String strElong = LatLon.greatCircleDistance(center, top).getRadians() * Cons.radius + "\t"
-//                + LatLon.greatCircleDistance(center, left).getRadians() * Cons.radius + "\t"
-//                + LatLon.greatCircleDistance(center, right).getRadians() * Cons.radius + "\t";
+//            String strElong = LatLon.greatCircleDistance(center, top).getRadians() * Const.radius + "\t"
+//                + LatLon.greatCircleDistance(center, left).getRadians() * Const.radius + "\t"
+//                + LatLon.greatCircleDistance(center, right).getRadians() * Const.radius + "\t";
 //            ///IO.write(folderName,"elong_0", strElong);
 //            // area
 //            ///IO.write(folderName,"area_0",planeAreas.get(i).toString());
@@ -232,16 +242,16 @@ public class TestSimple
 //        System.out.println("=============");
 //        double spc = Compactness.getSphereCompactness(sphericalAreas.get(0), sphericalEdges.get(0).get(0) * 3);
 //        System.out.println("SphereCompactness = " + spc);
-//        System.out.println("Area = " + 4 * Math.PI * Math.pow(Cons.radius, 2) / 8);
+//        System.out.println("Area = " + 4 * Math.PI * Math.pow(Const.radius, 2) / 8);
 
 //        Triangle triangle = OctahedronInscribed.getInstance().getFacetList().get(0);
-//        LatLon top = Cons.vec4ToLatLon(triangle.getA());
-//        LatLon left = Cons.vec4ToLatLon(triangle.getB());
-//        LatLon right = Cons.vec4ToLatLon(triangle.getC());
+//        LatLon top = Const.vec4ToLatLon(triangle.getA());
+//        LatLon left = Const.vec4ToLatLon(triangle.getB());
+//        LatLon right = Const.vec4ToLatLon(triangle.getC());
 //        MiddleArcSurfaceTriangle surfaceTriangle = new MiddleArcSurfaceTriangle(top,left,right,new Geocode("A"));
 //        int level  = 1;
 //        List<MiddleArcSurfaceTriangle> subTriangles = Arrays.asList(surfaceTriangle.refine());
-//        subTriangles.sort((o1, o2) -> Cons.sortByRow(o1.getGeocode(),o2.getGeocode()));
+//        subTriangles.sort((o1, o2) -> Const.sortByRow(o1.getGeocode(),o2.getGeocode()));
 //        Set<LatLon> set = new HashSet<>();
 //        List<LatLon> vertices = new ArrayList<>();
 //        for (MiddleArcSurfaceTriangle tri :

@@ -89,7 +89,7 @@ public class SphereStatisticsPoint
 
     private void setSphericalMean()
     {
-        double length = IO.check(getResultant().getLength3()) <= Cons.EPSILON ? 1.0 : getResultant().getLength3();
+        double length = IO.check(getResultant().getLength3()) <= Const.EPSILON ? 1.0 : getResultant().getLength3();
         Vec4 v = getResultant().divide3(length);
         this.sphericalMean = IO.check(v);
     }
@@ -136,7 +136,7 @@ public class SphereStatisticsPoint
 
     public double getDispersion()
     {
-        return Cons.getGlobe().getRadius() * getDispersionUnit();
+        return Const.getGlobe().getRadius() * getDispersionUnit();
     }
 
     public double getDispersionUnit()

@@ -26,7 +26,7 @@ public class CompactnessImpl
 //        OctahedronInscribed instance = OctahedronInscribed.getInstance();
 //        int facesNumber = 8; // 20
         LatLon a, b, c;
-        double baseSphericalFacetArea = 4 * Math.PI * Math.pow(Cons.RADIUS, 2) / facesNumber;
+        double baseSphericalFacetArea = 4 * Math.PI * Math.pow(Const.RADIUS, 2) / facesNumber;
         // perimeter: planar and spherical perimeter
         List<List<Double>> perimeter = new ArrayList<>();
         List<Double> perimeterPlSp;
@@ -52,7 +52,7 @@ public class CompactnessImpl
             perimeter.add(perimeterPlSp);
             areaPlSp = new ArrayList<>(2);
             areaPlSp.add(Area.planeTriangleArea(instance.getFacets()[i]));
-            areaPlSp.add(Area.unitSphereSurfaceTriangleArea(a, b, c)*Math.pow(Cons.RADIUS,2));
+            areaPlSp.add(Area.unitSphereSurfaceTriangleArea(a, b, c)*Math.pow(Const.RADIUS,2));
             area.add(areaPlSp);
 
             delta = Math.abs(areaPlSp.get(1) - baseSphericalFacetArea);
@@ -69,7 +69,7 @@ public class CompactnessImpl
             distortionPlSp.add(disPl);
             double aSp = areaPlSp.get(1);
             double pSp2 = Math.pow(perimeterPlSp.get(1), 2);
-            double r2 = Math.pow(Cons.RADIUS, 2);
+            double r2 = Math.pow(Const.RADIUS, 2);
             double disSp = (4 * Math.PI * r2 * aSp - Math.pow(aSp, 2)) / (r2 * pSp2);
             distortionPlSp.add(disSp);
             distortionPlSp.add(disPl / disSp);

@@ -27,24 +27,26 @@ public class QTMTriangleMesh extends SurfaceTriangleMesh
 
     public QTMTriangleMesh cutMesh()
     {
+        // 第一八分面
         return cutMesh(1);
     }
 
     public QTMTriangleMesh cutMesh(int octant)
     {
+        // 第octant个八分面
         int level = this.getLevel();
 //        MidArcTriangleMesh tempMesh = new MidArcTriangleMesh(level);
         QTMTriangleMesh mesh = new QTMTriangleMesh(level);
-        List<QTMTriangle> basePolygons = new ArrayList<>();
+        List<QTMTriangle> baseTriangles = new ArrayList<>();
         List<QTMTriangle> subQTMTriangles = new ArrayList<>();
 
         for (SphericalTriangleOctahedron triangle : SphericalTriangleOctahedron.values())
         {
-            basePolygons.add(QTMTriangle.cast(triangle.baseTriangle()));
-            //triangle.baseTriangle()
+            // 给出全部球形多面体 spherical polyhedra
+            baseTriangles.add(QTMTriangle.cast(triangle.baseTriangle()));
         }
 
-        for (QTMTriangle triangle : basePolygons)
+        for (QTMTriangle triangle : baseTriangles)
         {
             subQTMTriangles.add(triangle);
             for (int i = 0; i < level; i++)
@@ -55,8 +57,6 @@ public class QTMTriangleMesh extends SurfaceTriangleMesh
                     // refine
                     QTMTriangle[] trianglesRefine = tri.refine();
                     temp.addAll(Arrays.asList(trianglesRefine));
-//                    temp.addAll(Arrays.asList(tri.refine()));
-//                    count++;
                 }
                 if (!temp.isEmpty())
                 {

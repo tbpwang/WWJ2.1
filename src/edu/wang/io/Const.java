@@ -23,7 +23,7 @@ import java.util.List;
  * @description superclass class
  * @parameter return Sphere(Geometry) and Globe(Globe)
  */
-public final class Cons
+public final class Const
 {
     public final static double EPSILON = 1.0E-6;
     private static Vec4 ORIGIN = Vec4.ZERO;

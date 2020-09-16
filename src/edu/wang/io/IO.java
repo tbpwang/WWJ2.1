@@ -7,7 +7,6 @@
 package edu.wang.io;
 
 import edu.wang.*;
-import gov.nasa.worldwind.formats.csv.CSVTrackPoint;
 import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.util.Logging;
 
@@ -120,7 +119,7 @@ public class IO
 
         if (precision <= 0)
         {
-            precision = Cons.PRECISION;
+            precision = Const.PRECISION;
         }
         for (int i = 0; i < precision; i++)
         {
@@ -135,7 +134,7 @@ public class IO
 
     public static String formatDouble(double doubleValue)
     {
-        return formatDouble(doubleValue,Cons.PRECISION);
+        return formatDouble(doubleValue, Const.PRECISION);
 //        String pattern = "0.000000";
 ////        String pattern = Math.abs(number) >= 100 ? "0.00000000E0" : "0.00000000";
 //        return new DecimalFormat(pattern).format(number);
@@ -194,16 +193,16 @@ public class IO
 
     public static double check(double doubleValue)
     {
-        return check(doubleValue, Cons.PRECISION);
+        return check(doubleValue, Const.PRECISION);
         //return Math.abs(value) <= epsilon ? 0.0 : value;
     }
 
-    public static LatLon check(LatLon latLon)
-    {
-        double latitude = check(latLon.latitude.radians);
-        double longitude = check(latLon.longitude.radians);
-        return LatLon.fromRadians(latitude, longitude);
-    }
+//    public static LatLon check(LatLon latLon)
+//    {
+//        double latitude = check(latLon.latitude.radians);
+//        double longitude = check(latLon.longitude.radians);
+//        return LatLon.fromRadians(latitude, longitude);
+//    }
 
     public static Vec4 check(double x, double y, double z)
     {
@@ -328,5 +327,26 @@ public class IO
             return diff2;
         }
         return diff1;
+    }
+    public static double asInt(double adouble)
+    {
+        double aint = Math.rint(adouble);
+        double delta = Math.abs(aint - adouble);
+        if (delta <= Const.EPSILON)
+        {
+            return aint;
+        }
+        else
+        {
+            return adouble;
+        }
+    }
+    public static LatLon check(LatLon latLon)
+    {
+        if (latLon == null)
+            return null;
+        double lat = asInt(latLon.getLatitude().getRadians());
+        double lon = asInt(latLon.getLongitude().getRadians());
+        return LatLon.fromRadians(lat, lon);
     }
 }

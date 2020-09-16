@@ -6,7 +6,7 @@
 
 package edu.wang.model;
 
-import edu.wang.io.Cons;
+import edu.wang.io.Const;
 import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.util.Logging;
 
@@ -19,7 +19,7 @@ public class Distance
 {
     public static double distance(LatLon p1, LatLon p2)
     {
-        return distance(p1, p2, Cons.RADIUS);
+        return distance(p1, p2, Const.RADIUS);
     }
 
     public static double distance(LatLon p1, LatLon p2, double radius)

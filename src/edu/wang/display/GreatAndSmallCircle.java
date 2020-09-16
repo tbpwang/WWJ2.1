@@ -6,7 +6,7 @@
 
 package edu.wang.display;
 
-import edu.wang.io.Cons;
+import edu.wang.io.Const;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.layers.RenderableLayer;
@@ -75,15 +75,15 @@ public class GreatAndSmallCircle extends ApplicationTemplate
             path.setPathType(type);
             if (type == AVKey.RHUMB_LINE)
             {
-                path.setAttributes(Cons.defaultPathAttribute(new Color(180, 0, 0)));
+                path.setAttributes(Const.defaultPathAttribute(new Color(180, 0, 0)));
             }
             else if (type == AVKey.LINEAR)
             {
-                path.setAttributes(Cons.defaultPathAttribute(new Color(0,0,180)));
+                path.setAttributes(Const.defaultPathAttribute(new Color(0,0,180)));
             }
             else
             {
-                path.setAttributes(Cons.defaultPathAttribute());
+                path.setAttributes(Const.defaultPathAttribute());
             }
             layer.addRenderable(path);
             layer.setName(name);

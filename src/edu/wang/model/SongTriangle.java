@@ -82,7 +82,7 @@ public class SongTriangle extends SurfaceTriangle
     }
 
     @Override
-    public List<Angle> interiorAngle()
+    public List<Angle> innerAngle()
     {
         // 顶角->左角->右角
         List<Angle> interior = new ArrayList<>();
@@ -149,18 +149,18 @@ public class SongTriangle extends SurfaceTriangle
         }
         LatLon bottomPole = bottomEdge.getPole();
         LatLon midBottom = bottomEdge.getMiddlePoint();
-//        LatLon midBottomLL = Cons.vec4ToLatLon(midBottom);
+//        LatLon midBottomLL = Const.vec4ToLatLon(midBottom);
 
         LatLon rightPole = rightEdge.getPole();
         LatLon midRight = rightEdge.getMiddlePoint();
-//        LatLon midRightLL = Cons.vec4ToLatLon(midRight);
+//        LatLon midRightLL = Const.vec4ToLatLon(midRight);
 
         LatLon leftPole = leftEdge.getPole();
         LatLon midLeft = leftEdge.getMiddlePoint();
-//        LatLon midLeftLL = Cons.vec4ToLatLon(midLeft);
+//        LatLon midLeftLL = Const.vec4ToLatLon(midLeft);
 
         SongTriangle[] triangles = new SongTriangle[4];
-        String id = getId();
+        String id = getGeocode().getID();
 
         // "1"
         SmallCircle[] splitLeft = leftEdge.bisect();
@@ -333,7 +333,7 @@ public class SongTriangle extends SurfaceTriangle
         double f_x0 = calculateRelativeCoLatitudeFunction(cosBtm, x0, semiLuneArea);
         double f_x1 = calculateRelativeCoLatitudeFunction(cosBtm, x1, semiLuneArea);
         double x2 = x1 - f_x1 * (x1 - x0) / (f_x1 - f_x0);
-        while (Math.abs(x2 - x1) > Cons.EPSILON)
+        while (Math.abs(x2 - x1) > Const.EPSILON)
         {
             x0 = x1;
             x1 = x2;
@@ -346,7 +346,7 @@ public class SongTriangle extends SurfaceTriangle
 
     private double calculateRelativeCoLatitudeFunction(double bottomCos, double initCoLat, double semiLuneArea)
     {
-        if (initCoLat <= Cons.EPSILON)
+        if (initCoLat <= Const.EPSILON)
         {
             System.out.println("semiLuneArea - Math.PI = ");
             System.out.println(semiLuneArea - Math.PI);

@@ -23,48 +23,26 @@ import java.util.*;
  * @description
  * @parameter
  */
-public class QTMTriangle extends SurfaceTriangle//MiddleArcTriangle
+public class QTMTriangle extends SurfaceTriangle
 {
-    //    private boolean isUp = true;
-    private Geocode geocode;
-    private final boolean isStrictLatitude;
+    private final boolean isParallelBottom;
     private QTMTriangle[] subTriangles;
 
     public QTMTriangle(LatLon top, LatLon left, LatLon right, Geocode geocode)
     {
-        this(top, left, right, geocode.getID());
-        this.geocode = geocode;
+        super(top, left, right, geocode);
+        double delta = Math.abs(right.getLatitude().radians - left.getLatitude().radians);
+        isParallelBottom = !(IO.check(delta) > Const.EPSILON);
     }
 
     public QTMTriangle(LatLon top, LatLon left, LatLon right, String id)
     {
-        super(top, left, right, id);
-
-        if (this.geocode == null)
-        {
-            this.geocode = new Geocode(id);
-        }
-
-        double delta = Math.abs(right.getLatitude().radians - left.getLatitude().radians);
-//        delta = IO.check(delta);
-        if (IO.check(delta) > Cons.EPSILON)
-        {
-            isStrictLatitude = false;
-            // output tips
-            System.out.println("LatitudeDelta =\t" +  Math.toDegrees(delta) + "\tDegree");
-//            System.out.println("LatitudeDelta =\t" + IO.check(Math.toDegrees(delta), 4) + "\tDegree");
-            System.out.println("ID\t=\t" + id);
-        }
-        else
-        {
-            isStrictLatitude = true;
-        }
-        System.out.println("StrictLatitude = " + isStrictLatitude);
+        this(top, left, right, new Geocode(id));
     }
 
-    public boolean isStrictLatitude()
+    public boolean isStrictQTM()
     {
-        return isStrictLatitude;
+        return isParallelBottom;
     }
 
     public static QTMTriangle cast(SurfaceTriangle triangle)
@@ -73,52 +51,54 @@ public class QTMTriangle extends SurfaceTriangle//MiddleArcTriangle
         {
             return null;
         }
-        return new QTMTriangle((triangle.getTop()), (triangle.getLeft()), (triangle.getRight()),
-            triangle.getGeocode());
+        LatLon A, B, C;
+        A = IO.check(triangle.getTop());
+        B = IO.check(triangle.getLeft());
+        C = IO.check(triangle.getRight());
+        return new QTMTriangle(A, B, C, triangle.getGeocode());
     }
-
-    public Geocode getGeocode()
-    {
-        return geocode;
-    }
-
-//    public double thisUnitArea()
-//    {
-////        boolean isUp = this.isUp();
-//        double area = -999999;
-////        double A =
-//        if (isUp())
-//        {
-//            // top is up
-//
-//        }
-//        else
-//        {
-//            // top to down
-//        }
-//    }
 
     @Override
     public double getUnitArea()
     {
-        return getUnitArea(true);
-//        int interval = 1000;
-//        double minLon = Math.min(getLeft().getLongitude().radians, getRight().getLongitude().radians);
-//        double maxLon = Math.max(getLeft().getLongitude().radians, getRight().getLongitude().radians);
-//        double lat = getLeft().getLatitude().radians;
-//        double delta = IO.check((maxLon - minLon) / interval);
-//        while (delta <= Cons.EPSILON)
-//        {
-//            interval = interval / 10;
-//            delta = IO.check((maxLon - minLon) / interval);
-//        }
-//        double from = minLon;
-//        double to = minLon + delta;
+//        return getUnitArea(true);
+        return someAreas();
+    }
+
+    private double someAreas()
+    {
+        // 微分法
+
+        int interval = 1000;
+        double minLon = getLeft().getLongitude().radians;
+        double maxLon = getRight().getLongitude().radians;
+//        double lat1 = getLeft().getLatitude().radians;
+//        double lat2 = getRight().getLatitude().radians;
+
+        double delta = IO.check((maxLon - minLon) / interval);
+        while (delta <= Const.EPSILON)
+        {
+            interval = interval / 10;
+            delta = IO.check((maxLon - minLon) / interval);
+        }
+        LatLon tempFrom, tempTo;
+        double addArea = 0.0;
+        for (int i = 0; i < interval; i++)
+        {
+            tempFrom = LatLon.interpolateRhumb((double) i / interval, getLeft(), getRight());
+            tempTo = LatLon.interpolateRhumb((i + 1.0) / interval, getLeft(), getRight());
+            addArea += Area.unitSphereSurfaceTriangleArea(getTop(), tempFrom, tempTo);
+        }
+
+        return addArea;
+
+//        from = minLon;
+//        to = minLon + delta;
 //        double area = 0.0;
 //        for (int i = 0; i < interval; i++)
 //        {
-//            LatLon left = LatLon.fromRadians(lat, from);
-//            LatLon right = LatLon.fromRadians(lat, to);
+//            LatLon left = LatLon.fromRadians(lat1, from);
+//            LatLon right = LatLon.fromRadians(lat1, to);
 //            from = from + delta;
 //            if (i == interval - 1)
 //            {
@@ -173,11 +153,11 @@ public class QTMTriangle extends SurfaceTriangle//MiddleArcTriangle
         double areaPBC = 2 * Math.PI * radius * (1.0 - Math.abs(bottom.sin())) * rate;
 
         double topLatitudeDegree = getTop().getLatitude().degrees;
-        if (isUp() && topLatitudeDegree > 0 && 90.0 - topLatitudeDegree <= Cons.EPSILON)
+        if (isUp() && topLatitudeDegree > 0 && 90.0 - topLatitudeDegree <= Const.EPSILON)
         {
             return areaPBC;
         }
-        if (isUp() && topLatitudeDegree < 0 && 90.0 + topLatitudeDegree <= Cons.EPSILON)
+        if (isUp() && topLatitudeDegree < 0 && 90.0 + topLatitudeDegree <= Const.EPSILON)
         {
             return areaPBC;
         }
@@ -270,138 +250,7 @@ public class QTMTriangle extends SurfaceTriangle//MiddleArcTriangle
         }
 
         return area;
-
-//        if (topLatitudeDegree >= 0)
-//        {
-//            pole = LatLon.fromDegrees(90.0, 0);
-//            if (this.isUp())
-//            {
-//
-//                if (getTop().getLongitude().degrees <= minLongitude)
-//
-//                    if (getLeft().longitude.subtract(getTop().longitude).degrees > 0.0)
-//                    {
-////                    surfaceTriangle1 = new SurfaceTriangle(pole, getTop(), getLeft(), "");
-//                        area1 = Area.unitSphereSurfaceTriangleArea(pole, getTop(), getLeft());
-////                    area1 = surfaceTriangle1.getUnitArea();
-////                    surfaceTriangle2 = new SurfaceTriangle(pole, getTop(), getRight(), "");
-////                    area2 = surfaceTriangle2.getUnitArea();
-//                        area2 = Area.unitSphereSurfaceTriangleArea(pole, getTop(), getRight());
-//                        return areaPBC + area1 - area2;
-//                    }
-//                    else if (getLeft().longitude.subtract(getTop().longitude).degrees == 0.0)
-//                    {
-////                    surfaceTriangle2 = new SurfaceTriangle(pole, getTop(), getRight(), "");
-////                    area2 = surfaceTriangle2.getUnitArea();
-//                        area2 = Area.unitSphereSurfaceTriangleArea(pole, getTop(), getRight());
-////                    area1 = 0.0;
-//                        return areaPBC - area2;
-//                    }
-//                    else
-//                    {
-//                        if (getRight().longitude.subtract(getTop().longitude).degrees > 0.0)
-//                        {
-////                        surfaceTriangle1 = new SurfaceTriangle(pole, getLeft(), getTop(), "");
-////                        area1 = surfaceTriangle1.getUnitArea();
-//                            area1 = Area.unitSphereSurfaceTriangleArea(pole, getLeft(), getTop());
-////                        surfaceTriangle2 = new SurfaceTriangle(pole, getTop(), getRight(), "");
-////                        area2 = surfaceTriangle2.getUnitArea();
-//                            area2 = Area.unitSphereSurfaceTriangleArea(pole, getTop(), getRight());
-//                            return areaPBC - area1 - area2;
-//                        }
-//                        else if (getRight().longitude.subtract(getTop().longitude).degrees == 0.0)
-//                        {
-////                        surfaceTriangle1 = new SurfaceTriangle(pole, getLeft(), getTop(), "");
-////                        area1 = surfaceTriangle1.getUnitArea();
-//                            area1 = Area.unitSphereSurfaceTriangleArea(pole, getLeft(), getTop());
-////                    area2=0.0;
-//                            return areaPBC - area1;
-//                        }
-//                        else
-//                        {
-//
-////                        surfaceTriangle1 = new SurfaceTriangle(pole, getLeft(), getTop(), "");
-////                        area1 = surfaceTriangle1.getUnitArea();
-////                        surfaceTriangle2 = new SurfaceTriangle(pole, getRight(), getTop(), "");
-////                        area2 = surfaceTriangle2.getUnitArea();
-//                            area1 = Area.unitSphereSurfaceTriangleArea(pole, getLeft(), getTop());
-//                            area2 = Area.unitSphereSurfaceTriangleArea(pole, getRight(), getTop());
-//                            return areaPBC + area2 - area1;
-//                        }
-//                    }
-//            }
-//            else
-//            {
-//                if (getLeft().longitude.subtract(getTop().longitude).degrees > 0.0)
-//                {
-////                    surfaceTriangle1 = new SurfaceTriangle(pole, getTop(), getLeft(), "");
-////                    area1 = surfaceTriangle1.getUnitArea();
-//                    area1 = Area.unitSphereSurfaceTriangleArea(pole, getTop(), getLeft());
-////                    surfaceTriangle2 = new SurfaceTriangle(pole, getTop(), getRight(), "");
-////                    area2 = surfaceTriangle2.getUnitArea();
-//                    area2 = Area.unitSphereSurfaceTriangleArea(pole, getTop(), getRight());
-//                    return area2 - area1 - areaPBC;
-//                }
-//                else if (getLeft().longitude.subtract(getTop().longitude).degrees == 0.0)
-//                {
-////                    surfaceTriangle2 = new SurfaceTriangle(pole, getTop(), getRight(), "");
-////                    area2 = surfaceTriangle2.getUnitArea();
-////                    area1 = 0.0;
-//                    area2 = Area.unitSphereSurfaceTriangleArea(pole, getTop(), getRight());
-//                    return area2 - areaPBC;
-//                }
-//                else
-//                {
-//                    if (getRight().longitude.subtract(getTop().longitude).degrees > 0.0)
-//                    {
-////                        surfaceTriangle1 = new SurfaceTriangle(pole, getLeft(), getTop(), "");
-////                        area1 = surfaceTriangle1.getUnitArea();
-//                        area1 = Area.unitSphereSurfaceTriangleArea(pole, getLeft(), getTop());
-////                        surfaceTriangle2 = new SurfaceTriangle(pole, getTop(), getRight(), "");
-////                        area2 = surfaceTriangle2.getUnitArea();
-//                        area2 = Area.unitSphereSurfaceTriangleArea(pole, getTop(), getRight());
-//                        return area1 + area2 - areaPBC;
-//                    }
-//                    else if (getRight().longitude.subtract(getTop().longitude).degrees == 0.0)
-//                    {
-////                        surfaceTriangle1 = new SurfaceTriangle(pole, getLeft(), getTop(), "");
-////                        area1 = surfaceTriangle1.getUnitArea();
-//                        area1 = Area.unitSphereSurfaceTriangleArea(pole, getLeft(), getTop());
-////                    area2=0.0;
-//                        return area1 - areaPBC;
-//                    }
-//                    else
-//                    {
-//                        //getRight().longitude.subtract(getTop().longitude).degrees<0.0
-////                        surfaceTriangle1 = new SurfaceTriangle(pole, getLeft(), getTop(), "");
-////                        area1 = surfaceTriangle1.getUnitArea();
-//                        area1 = Area.unitSphereSurfaceTriangleArea(pole, getLeft(), getTop());
-////                        surfaceTriangle2 = new SurfaceTriangle(pole, getRight(), getTop(), "");
-////                        area2 = surfaceTriangle2.getUnitArea();
-//                        area2 = Area.unitSphereSurfaceTriangleArea(pole, getRight(), getTop());
-//                        return area1 - area2 - areaPBC;
-//                    }
-//                }
-//            }
-//        }
-//        else
-//        {
-////            LatLon aTop = LatLon.fromDegrees(getTop().latitude.multiply(-1).degrees, getTop().longitude.degrees);
-////            LatLon aLeft = LatLon.fromDegrees(getLeft().latitude.multiply(-1).degrees, getLeft().longitude.degrees);
-////            LatLon aRight = LatLon.fromDegrees(getRight().latitude.multiply(-1).degrees, getRight().longitude.degrees);
-////            ZhaoSurfaceTriangle aTriangle = new ZhaoSurfaceTriangle(aTop, aLeft, aRight, this.geocode);
-////            return aTriangle.getUnitArea(true);
-//            return -999999;
-//        }
     }
-
-//    @Override
-//    public double computeArea()
-//    {
-//        double area = getUnitArea(true);
-////        double area = getUnitArea(true);
-//        return area * Cons.radius * Cons.radius;
-//    }
 
     @Override
     public Path[] renderPath()
@@ -419,20 +268,20 @@ public class QTMTriangle extends SurfaceTriangle//MiddleArcTriangle
         path1.setAltitudeMode(WorldWind.RELATIVE_TO_GROUND);
         path1.setFollowTerrain(true);
         path1.setPathType(AVKey.GREAT_CIRCLE);
-        path1.setAttributes(Cons.defaultPathAttribute());
+        path1.setAttributes(Const.defaultPathAttribute());
 
         path2 = new Path(new Position(getLeft(), 0), new Position(getRight(), 0));
         path2.setAltitudeMode(WorldWind.RELATIVE_TO_GROUND);
         path2.setFollowTerrain(true);
         path2.setPathType(AVKey.RHUMB_LINE);
-        path2.setAttributes(Cons.defaultPathAttribute());
+        path2.setAttributes(Const.defaultPathAttribute());
 
         return new Path[] {path1, path2};
     }
 
     public double computeLoss()
     {
-        if (isStrictLatitude())
+        if (isStrictQTM())
             return 0.0;
         double area = this.getUnitArea(true);
 
@@ -474,7 +323,7 @@ public class QTMTriangle extends SurfaceTriangle//MiddleArcTriangle
         LatLon cc = LatLon.interpolateGreatCircle(0.5, A, B);
 
         subTriangles = new QTMTriangle[4];
-        Geocode[] geocodes = this.geocode.binaryRefine();
+        Geocode[] geocodes = getGeocode().binaryRefine();
         subTriangles[0] = new QTMTriangle(aa, cc, bb, geocodes[0]);
         subTriangles[1] = new QTMTriangle(A, cc, bb, geocodes[1]);
         subTriangles[2] = new QTMTriangle(cc, B, aa, geocodes[2]);
@@ -502,7 +351,6 @@ public class QTMTriangle extends SurfaceTriangle//MiddleArcTriangle
 //        String ID = this.getGeocode().getID();
 //        ZhaoQTM[] subCells = new ZhaoQTM[4];
 
-        System.out.println(getId());
         LatLon pA, pB, pC;
         pA = getTop();
         pB = getLeft();
@@ -513,11 +361,11 @@ public class QTMTriangle extends SurfaceTriangle//MiddleArcTriangle
 //        double midBottomLongitude = IO.check((pB.longitude.add(pC.longitude)).divide(2.0).degrees, 4);
         double pBLon = pB.getLongitude().getRadians();
         double pCLon = pC.getLongitude().getRadians();
-        if (IO.check(pBLon + Math.PI) <= Cons.EPSILON && IO.check(pCLon) > Cons.EPSILON)
+        if (IO.check(pBLon + Math.PI) <= Const.EPSILON && IO.check(pCLon) > Const.EPSILON)
         {
             pBLon = Math.PI;
         }
-        if (IO.check(Math.PI - pCLon) <= Cons.EPSILON && IO.check(pBLon) < -Cons.EPSILON)
+        if (IO.check(Math.PI - pCLon) <= Const.EPSILON && IO.check(pBLon) < -Const.EPSILON)
         {
             pCLon = -Math.PI;
         }
@@ -527,11 +375,11 @@ public class QTMTriangle extends SurfaceTriangle//MiddleArcTriangle
         LatLon cTemp = LatLon.interpolateGreatCircle(0.5, pB, pA);
 //        double bTLon = bTemp.getLongitude().getRadians();
 //        double cTLon = cTemp.getLongitude().getRadians();
-//        if (IO.check(cTLon + Math.PI) <= Cons.EPSILON && IO.check(bTLon) > Cons.EPSILON)
+//        if (IO.check(cTLon + Math.PI) <= Const.EPSILON && IO.check(bTLon) > Const.EPSILON)
 //        {
 //            cTLon = Math.PI;
 //        }
-//        if (IO.check(Math.PI - bTLon) <= Cons.EPSILON && IO.check(cTLon) < -Cons.EPSILON)
+//        if (IO.check(Math.PI - bTLon) <= Const.EPSILON && IO.check(cTLon) < -Const.EPSILON)
 //        {
 //            bTLon = -Math.PI;
 //        }
@@ -543,7 +391,7 @@ public class QTMTriangle extends SurfaceTriangle//MiddleArcTriangle
         double tbTcMidLat = IO.check((bTLat + cTLat) / 2.0);
 
         LatLon a;
-        if (isStrictLatitude())
+        if (isStrictQTM())
         {
             a = LatLon.fromDegrees(pB.getLatitude().degrees, Math.toDegrees(midBottomLongitude));
         }
@@ -567,7 +415,7 @@ public class QTMTriangle extends SurfaceTriangle//MiddleArcTriangle
 
 //        QTMTriangle[] subCells = new QTMTriangle[4];
         subTriangles = new QTMTriangle[4];
-        Geocode[] geocodes = this.geocode.binaryRefine();
+        Geocode[] geocodes = getGeocode().binaryRefine();
         subTriangles[0] = new QTMTriangle(a, c, b, geocodes[0]);
         subTriangles[1] = new QTMTriangle(pA, c, b, geocodes[1]);
         subTriangles[2] = new QTMTriangle(c, pB, a, geocodes[2]);
@@ -594,12 +442,12 @@ public class QTMTriangle extends SurfaceTriangle//MiddleArcTriangle
         if (LatLon.locationsCrossDateline(adjustPoint, referencePoint))
         {
             if (referencePoint.getLongitude().getRadians() > 0
-                && IO.check(adjustPoint.getLongitude().getRadians() + Math.PI) <= Cons.EPSILON)
+                && IO.check(adjustPoint.getLongitude().getRadians() + Math.PI) <= Const.EPSILON)
             {
                 changePoint = LatLon.fromDegrees(adjustPoint.getLatitude().degrees, 180);
             }
             if (referencePoint.getLongitude().getRadians() < 0
-                && IO.check(Math.PI - adjustPoint.getLongitude().getRadians()) <= Cons.EPSILON)
+                && IO.check(Math.PI - adjustPoint.getLongitude().getRadians()) <= Const.EPSILON)
             {
                 changePoint = LatLon.fromDegrees(adjustPoint.getLatitude().degrees, -180);
             }
@@ -670,7 +518,7 @@ public class QTMTriangle extends SurfaceTriangle//MiddleArcTriangle
         lon = t4 - arctan;
         lon = IO.check(lon);
 
-        if (Math.abs(lon) <= Cons.EPSILON)
+        if (Math.abs(lon) <= Const.EPSILON)
         {
             lonResult = 0.0;
         }
@@ -762,7 +610,7 @@ public class QTMTriangle extends SurfaceTriangle//MiddleArcTriangle
         lon = t4 - arctan;
         lon = IO.check(lon);
 
-        if (Math.abs(lon) <= Cons.EPSILON)
+        if (Math.abs(lon) <= Const.EPSILON)
         {
             lonResult = 0.0;
         }
@@ -864,7 +712,7 @@ public class QTMTriangle extends SurfaceTriangle//MiddleArcTriangle
 //        double temp = longitudeRadian;
         longitudeRadian = IO.check(longitudeRadian);
 
-        if (Math.abs(Math.toDegrees(longitudeRadian)) <= Cons.EPSILON)
+        if (Math.abs(Math.toDegrees(longitudeRadian)) <= Const.EPSILON)
         {
             longitudeResult = 0.0;
         }
@@ -904,19 +752,16 @@ public class QTMTriangle extends SurfaceTriangle//MiddleArcTriangle
         List<Double> edges = new ArrayList<>();
         double delt = Math.abs(getLeft().longitude.radians - getRight().longitude.radians);
 
-        edges.add(Cons.RADIUS * getRight().latitude.cos() * delt);// a
-        edges.add(LatLon.greatCircleDistance(getTop(), getRight()).radians * Cons.RADIUS);// b
-        edges.add(LatLon.greatCircleDistance(getLeft(), getTop()).radians * Cons.RADIUS);// c
+        edges.add(Const.RADIUS * getRight().latitude.cos() * delt);// a
+        edges.add(LatLon.greatCircleDistance(getTop(), getRight()).radians * Const.RADIUS);// b
+        edges.add(LatLon.greatCircleDistance(getLeft(), getTop()).radians * Const.RADIUS);// c
         return edges;
     }
 
     @Override
-    public List<Angle> interiorAngle()
+    public List<Angle> innerAngle()
     {
         List<Angle> angles = new ArrayList<>();
-//        double delt = Math.abs(getLeft().longitude.degrees - getRight().longitude.degrees);
-//        angles.add(Angle.fromDegrees(delt));
-//        Angle angle = getRight().longitude.subtract(getLeft().longitude);
         angles.add(SurfaceTriangle.computeAngleA(getTop(), getLeft(), getRight()));
         angles.add(bottomAngle(getLeft(), getTop()));
         angles.add(bottomAngle(getTop(), getRight()));
@@ -927,9 +772,9 @@ public class QTMTriangle extends SurfaceTriangle//MiddleArcTriangle
 //    public double angleStandardDeviation()
 //    {
 //        double A, B, C, avg, AA, BB, CC, stdd;
-//        A = interiorAngle().get(0).degrees;
-//        B = interiorAngle().get(1).degrees;
-//        C = interiorAngle().get(2).degrees;
+//        A = innerAngle().get(0).degrees;
+//        B = innerAngle().get(1).degrees;
+//        C = innerAngle().get(2).degrees;
 //        avg = (A + B + C) / 3.0;
 //        AA = Math.pow(A - avg, 2);
 //        BB = Math.pow(B - avg, 2);

@@ -37,15 +37,15 @@ public class EssentialVariable
         // metadata
         String metadata = "\t" + prefix + ".txt" + "\t" + "basicShape = " + basicShape + System.lineSeparator()
             + "Column1ID" + "\t" + "triangle.getGeocode().getID())" + System.lineSeparator()
-            + "Column2面积" + "\t" + "triangle.getUnitArea() * Math.pow(Cons.radius, 2)"
+            + "Column2面积" + "\t" + "triangle.getUnitArea() * Math.pow(Const.radius, 2)"
             + System.lineSeparator()
-            + "Column3角度" + "\t" + "triangle.interiorAngle().get(0).degrees" + System.lineSeparator()
-            + "Column4边长" + "\t" + "triangle.distance().get(i).radians * Cons.radius;"
+            + "Column3角度" + "\t" + "triangle.innerAngle().get(0).degrees" + System.lineSeparator()
+            + "Column4边长" + "\t" + "triangle.distance().get(i).radians * Const.radius;"
             + System.lineSeparator()
 //        metadata.append("(4)边长b").append("\t");
 //        metadata.append("(5)边长c").append("\t");
             + "Column5紧度" + "\t"
-            + "4 * Math.PI * Math.pow(Cons.radius, 2.0) * area - Math.pow(area, 2.0)) / Math.pow(Cons.radius * perimeter, 2.0)"
+            + "4 * Math.PI * Math.pow(Const.radius, 2.0) * area - Math.pow(area, 2.0)) / Math.pow(Const.radius * perimeter, 2.0)"
             + System.lineSeparator()
             + "Column6形状指数" + "\t" + "basicShape * Math.sqrt(area)/ perimeter;"
             + System.lineSeparator()
@@ -53,19 +53,19 @@ public class EssentialVariable
             + System.lineSeparator()
             + "Column8离散度" + "\t" + System.lineSeparator()
 //        metadata.append("(10)面积×离散度2").append("\t");
-            + "Column9twoCenter距离" + "\t" + "LatLon.greatCircleDistance(p1,p2).radians * Cons.radius"
+            + "Column9twoCenter距离" + "\t" + "LatLon.greatCircleDistance(p1,p2).radians * Const.radius"
             + System.lineSeparator()
             // Neighbor cell的邻接距离
-            + "Column10边邻接距离" + "\t" + "LatLon.greatCircleDistance(p1,p2).radians * Cons.radius"
+            + "Column10边邻接距离" + "\t" + "LatLon.greatCircleDistance(p1,p2).radians * Const.radius"
             + System.lineSeparator()
-            + "Column11角邻接距离" + "\t" + "LatLon.greatCircleDistance(p1,p2).radians * Cons.radius"
+            + "Column11角邻接距离" + "\t" + "LatLon.greatCircleDistance(p1,p2).radians * Const.radius"
             + System.lineSeparator()
 
             // pointName
             + "\t" + pointName + ".txt" + System.lineSeparator()
             + "Column1坐标" + System.lineSeparator()
             + "Column2邻近点方位角" + "\t" + "angle.degrees" + System.lineSeparator()
-            + "Column3到邻近点距离" + "\t" + "angle.radians * Cons.radius" + System.lineSeparator();
+            + "Column3到邻近点距离" + "\t" + "angle.radians * Const.radius" + System.lineSeparator();
         IO.write(folder, "metadata", metadata);
 
         // calculation by metadata
@@ -95,13 +95,13 @@ public class EssentialVariable
 //                double areaMulDis2;//area*dispersion
 //                cellContents.append(triangle.getGeocode().getID()).append(System.lineSeparator());
                 cellContents.append(triangle.getGeocode().getID()).append("\t\t");
-                area = triangle.getUnitArea() * Math.pow(Cons.RADIUS, 2);
+                area = triangle.getUnitArea() * Math.pow(Const.RADIUS, 2);
 //                cellContents.append("L2\t").append(area).append(System.lineSeparator());
                 cellContents.append(IO.formatDouble(area, 14)).append("\t\t");
                 // 内角
-                cellContents.append(IO.formatDouble(triangle.interiorAngle().get(0).degrees, 14)).append("\t");
-                cellContents.append(IO.formatDouble(triangle.interiorAngle().get(1).degrees, 14)).append("\t");
-                cellContents.append(IO.formatDouble(triangle.interiorAngle().get(2).degrees, 14)).append("\t\t");
+                cellContents.append(IO.formatDouble(triangle.innerAngle().get(0).degrees, 14)).append("\t");
+                cellContents.append(IO.formatDouble(triangle.innerAngle().get(1).degrees, 14)).append("\t");
+                cellContents.append(IO.formatDouble(triangle.innerAngle().get(2).degrees, 14)).append("\t\t");
 
                 // 根据不同的剖分方法，使用不同的计算方法计算边长
                 edge1 = triangle.edgeLengths().get(0);
@@ -114,8 +114,8 @@ public class EssentialVariable
 //                cellContents.append(edge3).append(System.lineSeparator());
                 cellContents.append(IO.formatDouble(edge3)).append("\t\t");
                 //cellContents.append(IO.formatDouble(perimeter)).append("\t");
-                compactness = (4 * Math.PI * Math.pow(Cons.RADIUS, 2.0) * area - Math.pow(area, 2.0)) / Math.pow(
-                    Cons.RADIUS * perimeter, 2.0);
+                compactness = (4 * Math.PI * Math.pow(Const.RADIUS, 2.0) * area - Math.pow(area, 2.0)) / Math.pow(
+                    Const.RADIUS * perimeter, 2.0);
 //                cellContents.append("L4\t").append(IO.formatDouble(compactness)).append(System.lineSeparator());
                 cellContents.append(IO.formatDouble(compactness)).append("\t\t");
 //                shapeIndex = perimeter / shape / Math.sqrt(area);
@@ -155,25 +155,25 @@ public class EssentialVariable
                 {
                     SurfaceTriangle nberTri = (SurfaceTriangle) aNber.getCellNode().getCell();
                     LatLon nearCenter = nberTri.getCenter();
-                    if (aNber.getType() == Cons.NEIGHBOR_TYPE_EDGE)
+                    if (aNber.getType() == Const.NEIGHBOR_TYPE_EDGE)
                     {
                         nearEdgeDistances.add(
-                            LatLon.greatCircleDistance(triangleCenter, nearCenter).radians * Cons.RADIUS);
+                            LatLon.greatCircleDistance(triangleCenter, nearCenter).radians * Const.RADIUS);
                         LatLon cellsCenter = LatLon.interpolateGreatCircle(0.5, triangleCenter, nearCenter);
                         double distance0 = LatLon.greatCircleDistance(edgeCenters.get(0), cellsCenter).radians
-                            * Cons.RADIUS;
+                            * Const.RADIUS;
                         double distance1 = LatLon.greatCircleDistance(edgeCenters.get(1), cellsCenter).degrees;
                         double distance2 = LatLon.greatCircleDistance(edgeCenters.get(2), cellsCenter).degrees;
                         twoLineCenterDistances.add(Math.min(Math.min(distance0, distance1), distance2));
                     }
-                    else if (aNber.getType() == Cons.NEIGHBOR_TYPE_VERTEX)
+                    else if (aNber.getType() == Const.NEIGHBOR_TYPE_VERTEX)
                     {
                         nearAngleDistances.add(
-                            LatLon.greatCircleDistance(triangleCenter, nearCenter).radians * Cons.RADIUS);
+                            LatLon.greatCircleDistance(triangleCenter, nearCenter).radians * Const.RADIUS);
                     }
                     else
                     {
-                        nearDistances.add(LatLon.greatCircleDistance(triangleCenter, nearCenter).radians * Cons.RADIUS);
+                        nearDistances.add(LatLon.greatCircleDistance(triangleCenter, nearCenter).radians * Const.RADIUS);
                     }
                 }
                 /** 12邻近
@@ -279,7 +279,7 @@ public class EssentialVariable
                 for (Angle distance :
                     distances)
                 {
-                    nodeContents.append(IO.formatDouble(distance.radians * Cons.RADIUS)).append("\t");
+                    nodeContents.append(IO.formatDouble(distance.radians * Const.RADIUS)).append("\t");
                 }
                 nodeContents.append(System.lineSeparator());
             }

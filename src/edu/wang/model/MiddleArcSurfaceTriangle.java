@@ -49,19 +49,19 @@ public class MiddleArcSurfaceTriangle extends SurfaceTriangle
 //    {
 //        List<Double> lengths = new ArrayList<>();
 //        List<Double> edges = distance();
-//        lengths.add(edges.get(0)* Cons.radius);
-//        lengths.add(edges.get(1)* Cons.radius);
-//        lengths.add(edges.get(2)* Cons.radius);
+//        lengths.add(edges.get(0)* Const.radius);
+//        lengths.add(edges.get(1)* Const.radius);
+//        lengths.add(edges.get(2)* Const.radius);
 //        return lengths;
 //    }
 //    public double computeArea()
 //    {
-//        return getUnitArea() * Cons.getGlobe().radius() * Cons.getGlobe().radius();
+//        return getUnitArea() * Const.getGlobe().radius() * Const.getGlobe().radius();
 //    }
 
     public SurfacePolygon[] renderPolygon()
     {
-        SurfacePolygon polygon = new SurfacePolygon(Cons.defaultPolygonAttribute(), getGeoVertices());
+        SurfacePolygon polygon = new SurfacePolygon(Const.defaultPolygonAttribute(), getGeoVertices());
 //        polygon.setPathType(pathType);
         polygon.setPathType(AVKey.GREAT_CIRCLE);
         return new SurfacePolygon[] {polygon};
@@ -72,7 +72,7 @@ public class MiddleArcSurfaceTriangle extends SurfaceTriangle
         ShapeAttributes attributes;
         if (attr == null)
         {
-            attributes = Cons.defaultPathAttribute();
+            attributes = Const.defaultPathAttribute();
         }
         else
         {

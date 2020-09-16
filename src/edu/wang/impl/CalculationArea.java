@@ -54,7 +54,7 @@ public class CalculationArea
                     surfaceTriangles)
                 {
                     IO.write("OctahedronInscribed", title,
-                        String.valueOf(var.getUnitArea() * Math.pow(Cons.RADIUS, 2)));
+                        String.valueOf(var.getUnitArea() * Math.pow(Const.RADIUS, 2)));
                 }
                 surfaceTriangles.clear();
                 surfaceTriangles.addAll(tempTriangles);

@@ -6,7 +6,7 @@
 
 package edu.wang.test;
 
-import edu.wang.io.Cons;
+import edu.wang.io.Const;
 
 /**
  * @author Zheng WANG
@@ -19,7 +19,7 @@ public class AreaLatitudeRelated
     private double coefficient_kappa(int level)
     {
         // level > 4
-        double R = Cons.getEarth().getRadius();
+        double R = Const.getEarth().getRadius();
         return Math.pow(Math.PI, 3) * Math.pow(R, 2) / Math.pow(2, 2 * level + 4);
     }
 

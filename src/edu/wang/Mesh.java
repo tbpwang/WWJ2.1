@@ -6,7 +6,7 @@
 
 package edu.wang;
 
-import edu.wang.io.Cons;
+import edu.wang.io.Const;
 
 import java.io.Serializable;
 import java.util.*;
@@ -130,7 +130,7 @@ public abstract class Mesh implements Serializable
             {
                 this.cellNode = new CellNode();
             }
-            if (type == Cons.NEIGHBOR_TYPE_EDGE || type == Cons.NEIGHBOR_TYPE_VERTEX)
+            if (type == Const.NEIGHBOR_TYPE_EDGE || type == Const.NEIGHBOR_TYPE_VERTEX)
             {
                 this.type = type;
             }
@@ -167,7 +167,7 @@ public abstract class Mesh implements Serializable
         public void setType(int neighborType)
         {
 //            this.type = neighborType;
-            if (type == Cons.NEIGHBOR_TYPE_VERTEX || type == Cons.NEIGHBOR_TYPE_EDGE)
+            if (type == Const.NEIGHBOR_TYPE_VERTEX || type == Const.NEIGHBOR_TYPE_EDGE)
             {
                 this.type = neighborType;
             }

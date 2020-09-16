@@ -47,7 +47,7 @@ public class HolhosEqualArea
 
     public static Vec4 toPlanePoint(double sphereX, double sphereY, double sphereZ)
     {
-        double R = Cons.RADIUS;
+        double R = Const.RADIUS;
         if (!isUnitSphere(sphereX, sphereY, sphereZ))
         {
             sphereX = sphereX / R;
@@ -77,7 +77,7 @@ public class HolhosEqualArea
 //        double Z = Math.signum(Math.cos(coLatitude)) * ldivsqrt2 * (1 - sqrt1subabscosphi);
         double Z = Math.signum(Math.sin(coLatitude)) * ldivsqrt2 * (1 - sqrt1subabscosphi);
         Vec4 vec4 = new Vec4(X, Y, Z);
-        return vec4.multiply3(Cons.RADIUS);
+        return vec4.multiply3(Const.RADIUS);
     }
 
     public static LatLon toSpherePoint(Vec4 planePoint)
@@ -87,7 +87,7 @@ public class HolhosEqualArea
 
     public static LatLon toSpherePoint(double planeX, double planeY, double planeZ)
     {
-        double R = Cons.RADIUS;
+        double R = Const.RADIUS;
 //        double X = Math.abs(planeX) >= R ? planeX / R : planeX;
 //        double Y = Math.abs(planeY) >= R ? planeY / R : planeY;
 //        double Z = Math.abs(planeZ) >= R ? planeZ / R : planeZ;
@@ -119,6 +119,6 @@ public class HolhosEqualArea
 
     private static boolean isUnitSphere(double x, double y, double z)
     {
-        return IO.check(Math.abs(Math.sqrt(x * x + y * y + z * z) - 1.0)) <= Cons.EPSILON;
+        return IO.check(Math.abs(Math.sqrt(x * x + y * y + z * z) - 1.0)) <= Const.EPSILON;
     }
 }

@@ -7,7 +7,7 @@
 package edu.wang.model;
 
 import edu.wang.*;
-import edu.wang.io.Cons;
+import edu.wang.io.Const;
 import gov.nasa.worldwind.util.Logging;
 
 import java.util.Objects;
@@ -52,20 +52,20 @@ public class SurfaceTriangleMesh extends Mesh
                 // 极点
                 // j=1
 //                Node n = search(i, j, baseID);
-                host.addNeighbor(rightToLeft(host).asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                host.addNeighbor(leftToRight(host).asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
+                host.addNeighbor(rightToLeft(host).asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                host.addNeighbor(leftToRight(host).asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
                 host.addNeighbor(
-                    Objects.requireNonNull(vertexToVertex(host)).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    Objects.requireNonNull(vertexToVertex(host)).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                 CellNode n = search(i - 1, j, baseID);
-                host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                host.addNeighbor(rightToLeft(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                host.addNeighbor(rightToLeft(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                 n = search(i - 1, j + 1, baseID);
-                host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                host.addNeighbor(rightToLeft(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                host.addNeighbor(leftToRight(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                host.addNeighbor(rightToLeft(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                host.addNeighbor(leftToRight(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                 n = search(i - 1, j + 2, baseID);
-                host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                host.addNeighbor(leftToRight(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                host.addNeighbor(leftToRight(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
             }
             else if (i == 1)
             {
@@ -74,87 +74,87 @@ public class SurfaceTriangleMesh extends Mesh
                 {
                     // 最左边
 //                    Node n = search(i, j, baseID);
-                    host.addNeighbor(rightToLeft(host).asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(rightToLeft(host).asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
                     host.addNeighbor(
-                        Objects.requireNonNull(vertexToVertex(host)).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                        Objects.requireNonNull(vertexToVertex(host)).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     CellNode n = search(i, j + 1, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
                     if (isNorth)
                     {
                         host.addNeighbor(
-                            Objects.requireNonNull(northGroundCross(host)).asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
+                            Objects.requireNonNull(northGroundCross(host)).asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
                         host.addNeighbor(
-                            Objects.requireNonNull(northGroundCross(n)).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                            Objects.requireNonNull(northGroundCross(n)).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     else
                     {
                         host.addNeighbor(
-                            Objects.requireNonNull(southGroundCross(host)).asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
+                            Objects.requireNonNull(southGroundCross(host)).asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
                         host.addNeighbor(
-                            Objects.requireNonNull(southGroundCross(n)).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                            Objects.requireNonNull(southGroundCross(n)).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
-                    host.addNeighbor(rightToLeft(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(rightToLeft(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     n = search(i, j + 2, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     if (isNorth)
                     {
                         host.addNeighbor(
-                            Objects.requireNonNull(northGroundCross(n)).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                            Objects.requireNonNull(northGroundCross(n)).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     else
                     {
                         host.addNeighbor(
-                            Objects.requireNonNull(southGroundCross(n)).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                            Objects.requireNonNull(southGroundCross(n)).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     n = search(i + 1, j, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(rightToLeft(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(rightToLeft(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                 }
                 else if (j == maxColumn(i))
                 {
                     // 最右边
                     CellNode n = search(i, j - 2, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     if (isNorth)
                     {
                         host.addNeighbor(
-                            Objects.requireNonNull(northGroundCross(n)).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                            Objects.requireNonNull(northGroundCross(n)).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     else
                     {
                         host.addNeighbor(
-                            Objects.requireNonNull(southGroundCross(n)).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                            Objects.requireNonNull(southGroundCross(n)).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     n = search(i, j - 1, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
                     if (isNorth)
                     {
                         host.addNeighbor(
-                            Objects.requireNonNull(northGroundCross(n)).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                            Objects.requireNonNull(northGroundCross(n)).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     else
                     {
                         host.addNeighbor(
-                            Objects.requireNonNull(southGroundCross(n)).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                            Objects.requireNonNull(southGroundCross(n)).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
-                    host.addNeighbor(leftToRight(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(leftToRight(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
 //                    n = search(i, j, baseID);//.asNeighbor(Constant.NEIGHBOR_TYPE_EDGE);
                     if (isNorth)
                     {
                         host.addNeighbor(
-                            Objects.requireNonNull(northGroundCross(host)).asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
+                            Objects.requireNonNull(northGroundCross(host)).asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
                     }
                     else
                     {
                         host.addNeighbor(
-                            Objects.requireNonNull(southGroundCross(host)).asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
+                            Objects.requireNonNull(southGroundCross(host)).asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
                     }
-                    host.addNeighbor(leftToRight(host).asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(leftToRight(host).asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
                     host.addNeighbor(
-                        Objects.requireNonNull(vertexToVertex(host)).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                        Objects.requireNonNull(vertexToVertex(host)).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     n = search(i + 1, j - 2, baseID);//.asNeighbor(Constant.NEIGHBOR_TYPE_VERTEX);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(leftToRight(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(leftToRight(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                 }
                 else
                 {
@@ -163,41 +163,41 @@ public class SurfaceTriangleMesh extends Mesh
                     CellNode n2 = search(i, j - 1, baseID);
                     CellNode n3 = search(i, j + 1, baseID);
                     CellNode n4 = search(i, j + 2, baseID);
-                    host.addNeighbor(n1.asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(n2.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(n3.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(n4.asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n1.asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n2.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(n3.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(n4.asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     // i-1
                     if (isNorth)
                     {
                         host.addNeighbor(
-                            Objects.requireNonNull(northGroundCross(n1)).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                            Objects.requireNonNull(northGroundCross(n1)).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                         host.addNeighbor(
-                            Objects.requireNonNull(northGroundCross(n2)).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                            Objects.requireNonNull(northGroundCross(n2)).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                         host.addNeighbor(
-                            Objects.requireNonNull(northGroundCross(host)).asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
+                            Objects.requireNonNull(northGroundCross(host)).asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
                         host.addNeighbor(
-                            Objects.requireNonNull(northGroundCross(n3)).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                            Objects.requireNonNull(northGroundCross(n3)).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                         host.addNeighbor(
-                            Objects.requireNonNull(northGroundCross(n4)).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                            Objects.requireNonNull(northGroundCross(n4)).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     else
                     {
                         host.addNeighbor(
-                            Objects.requireNonNull(southGroundCross(n1)).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                            Objects.requireNonNull(southGroundCross(n1)).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                         host.addNeighbor(
-                            Objects.requireNonNull(southGroundCross(n2)).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                            Objects.requireNonNull(southGroundCross(n2)).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                         host.addNeighbor(
-                            Objects.requireNonNull(southGroundCross(host)).asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
+                            Objects.requireNonNull(southGroundCross(host)).asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
                         host.addNeighbor(
-                            Objects.requireNonNull(southGroundCross(n3)).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                            Objects.requireNonNull(southGroundCross(n3)).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                         host.addNeighbor(
-                            Objects.requireNonNull(southGroundCross(n4)).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                            Objects.requireNonNull(southGroundCross(n4)).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     // i+1
-                    host.addNeighbor(search(i + 1, j - 2, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(search(i + 1, j - 1, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(search(i + 1, j, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i + 1, j - 2, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i + 1, j - 1, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i + 1, j, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                 }
             }
             else
@@ -206,50 +206,50 @@ public class SurfaceTriangleMesh extends Mesh
                 {
                     // i-1
                     CellNode n = search(i - 1, j, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(rightToLeft(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(rightToLeft(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     n = search(i - 1, j + 1, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(rightToLeft(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(rightToLeft(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     n = search(i - 1, j + 2, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     n = search(i - 1, j + 3, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     // i
 //                    n = search(i,j,baseID);
-                    host.addNeighbor(rightToLeft(host).asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(rightToLeft(host).asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
                     n = search(i, j + 1, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(rightToLeft(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(rightToLeft(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     n = search(i, j + 2, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     //i+1
                     n = search(i + 1, j, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(rightToLeft(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(rightToLeft(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                 }
                 else if (j == maxColumn(i))
                 {
                     // i-1
-                    host.addNeighbor(search(i - 1, j - 1, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(search(i - 1, j, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i - 1, j - 1, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i - 1, j, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     CellNode n = search(i - 1, j + 1, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(leftToRight(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(leftToRight(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     n = search(i - 1, j + 2, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(leftToRight(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(leftToRight(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     // i
-                    host.addNeighbor(search(i, j - 2, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i, j - 2, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     n = search(i, j - 1, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(leftToRight(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(leftToRight(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     // n =host
-                    host.addNeighbor(leftToRight(host).asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(leftToRight(host).asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
                     // i+1
                     n = search(i + 1, j - 2, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(leftToRight(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(leftToRight(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                 }
                 else
                 {
@@ -258,11 +258,11 @@ public class SurfaceTriangleMesh extends Mesh
                     {
                         if (k != j + 1)
                         {
-                            host.addNeighbor(search(i - 1, k, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                            host.addNeighbor(search(i - 1, k, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                         }
                         else
                         {
-                            host.addNeighbor(search(i - 1, k, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
+                            host.addNeighbor(search(i - 1, k, baseID).asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
                         }
                     }
                     // i
@@ -272,18 +272,18 @@ public class SurfaceTriangleMesh extends Mesh
                         {
                             if (k == j - 1 || k == j + 1)
                             {
-                                host.addNeighbor(search(i, k, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
+                                host.addNeighbor(search(i, k, baseID).asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
                             }
                             else
                             {
-                                host.addNeighbor(search(i, k, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                                host.addNeighbor(search(i, k, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                             }
                         }
                     }
                     // i+1
                     for (int k = j - 2; k <= j; k++)
                     {
-                        host.addNeighbor(search(i + 1, k, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(search(i + 1, k, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                 }
             }
@@ -296,225 +296,225 @@ public class SurfaceTriangleMesh extends Mesh
                 if (j == 2 && j == maxColumn(i) - 1)
                 {
                     CellNode n = search(i, j - 1, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(rightToLeft(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(rightToLeft(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     if (isNorth)
                     {
                         host.addNeighbor(
-                            Objects.requireNonNull(northGroundCross(n)).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                            Objects.requireNonNull(northGroundCross(n)).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     else
                     {
                         host.addNeighbor(
-                            Objects.requireNonNull(southGroundCross(n)).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                            Objects.requireNonNull(southGroundCross(n)).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
-                    host.addNeighbor(rightToLeft(host).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(leftToRight(host).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(rightToLeft(host).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(leftToRight(host).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     if (isNorth)
                     {
-                        host.addNeighbor(northGroundCross(host).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(northGroundCross(host).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     else
                     {
-                        host.addNeighbor(southGroundCross(host).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(southGroundCross(host).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     n = search(i, j + 1, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(leftToRight(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(leftToRight(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     if (isNorth)
                     {
-                        host.addNeighbor(northGroundCross(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(northGroundCross(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     else
                     {
-                        host.addNeighbor(southGroundCross(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(southGroundCross(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     // i+1
                     n = search(i + 1, j - 1, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(rightToLeft(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(leftToRight(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(rightToLeft(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(leftToRight(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                 }
                 else if (j == 2)
                 {
                     CellNode n = search(i, j - 1, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(rightToLeft(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(rightToLeft(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     if (isNorth)
                     {
-                        host.addNeighbor(northGroundCross(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(northGroundCross(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     else
                     {
-                        host.addNeighbor(southGroundCross(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(southGroundCross(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
-                    host.addNeighbor(rightToLeft(host).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(rightToLeft(host).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     if (isNorth)
                     {
-                        host.addNeighbor(northGroundCross(host).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(northGroundCross(host).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     else
                     {
-                        host.addNeighbor(southGroundCross(host).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(southGroundCross(host).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     n = search(i, j + 1, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
                     if (isNorth)
                     {
-                        host.addNeighbor(northGroundCross(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(northGroundCross(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     else
                     {
-                        host.addNeighbor(southGroundCross(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(southGroundCross(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     n = search(i, j + 2, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     // i+1
                     n = search(i + 1, j - 1, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(rightToLeft(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(search(i + 1, j, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(search(i + 1, j + 1, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(rightToLeft(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i + 1, j, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i + 1, j + 1, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                 }
                 else if (j == maxColumn(i) - 1)
                 {
                     // i && i-1
                     CellNode n = search(i, j - 2, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     n = search(i, j - 1, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
                     if (isNorth)
                     {
-                        host.addNeighbor(northGroundCross(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                        host.addNeighbor(northGroundCross(host).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(northGroundCross(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(northGroundCross(host).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     else
                     {
-                        host.addNeighbor(southGroundCross(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                        host.addNeighbor(southGroundCross(host).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(southGroundCross(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(southGroundCross(host).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
-                    host.addNeighbor(leftToRight(host).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(leftToRight(host).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     n = search(i, j + 1, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(leftToRight(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(leftToRight(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     if (isNorth)
                     {
-                        host.addNeighbor(northGroundCross(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(northGroundCross(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     else
                     {
-                        host.addNeighbor(southGroundCross(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(southGroundCross(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     // i+1
-                    host.addNeighbor(search(i + 1, j - 3, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(search(i + 1, j - 2, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i + 1, j - 3, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i + 1, j - 2, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     n = search(i + 1, j - 1, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(leftToRight(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(leftToRight(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                 }
                 else
                 {
                     // i && i-1
-                    host.addNeighbor(search(i, j - 2, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i, j - 2, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     CellNode n = search(i, j - 1, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
                     CellNode n1 = search(i, j + 1, baseID);
-                    host.addNeighbor(n1.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(n1.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
                     if (isNorth)
                     {
-                        host.addNeighbor(northGroundCross(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                        host.addNeighbor(northGroundCross(host).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                        host.addNeighbor(northGroundCross(n1).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(northGroundCross(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(northGroundCross(host).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(northGroundCross(n1).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
                     else
                     {
-                        host.addNeighbor(southGroundCross(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                        host.addNeighbor(southGroundCross(host).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                        host.addNeighbor(southGroundCross(n1).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(southGroundCross(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(southGroundCross(host).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                        host.addNeighbor(southGroundCross(n1).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     }
 //                    n = search(i, j + 2, baseID);
-                    host.addNeighbor(search(i, j + 2, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i, j + 2, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     // i+1
-                    host.addNeighbor(search(i + 1, j - 3, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(search(i + 1, j - 2, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(search(i + 1, j - 1, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(search(i + 1, j, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(search(i + 1, j + 1, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i + 1, j - 3, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i + 1, j - 2, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i + 1, j - 1, baseID).asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(search(i + 1, j, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i + 1, j + 1, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                 }
             }
             else if (i == maxRow() - 1)
             {
                 // i = 1
-                host.addNeighbor(search(i - 1, j, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                host.addNeighbor(search(i - 1, j + 1, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                host.addNeighbor(search(i - 1, j + 2, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                host.addNeighbor(search(i - 1, j, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                host.addNeighbor(search(i - 1, j + 1, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                host.addNeighbor(search(i - 1, j + 2, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                 // i
                 CellNode n = search(i, j - 1, baseID);
-                host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                host.addNeighbor(rightToLeft(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                host.addNeighbor(rightToLeft(host).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                host.addNeighbor(leftToRight(host).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                host.addNeighbor(rightToLeft(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                host.addNeighbor(rightToLeft(host).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                host.addNeighbor(leftToRight(host).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                 n = search(i, j + 1, baseID);
-                host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                host.addNeighbor(leftToRight(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                host.addNeighbor(leftToRight(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                 // i+1
                 n = search(i + 1, j - 1, baseID);
-                host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                host.addNeighbor(rightToLeft(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                host.addNeighbor(leftToRight(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                host.addNeighbor(rightToLeft(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                host.addNeighbor(leftToRight(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
             }
             else
             {
                 // i-1
-                host.addNeighbor(search(i - 1, j, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                host.addNeighbor(search(i - 1, j + 1, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                host.addNeighbor(search(i - 1, j + 2, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                host.addNeighbor(search(i - 1, j, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                host.addNeighbor(search(i - 1, j + 1, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                host.addNeighbor(search(i - 1, j + 2, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                 if (j == 2)
                 {
                     // i
                     CellNode n = search(i, j - 1, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(rightToLeft(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(rightToLeft(host).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(search(i, j + 1, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(search(i, j + 2, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(rightToLeft(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(rightToLeft(host).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i, j + 1, baseID).asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(search(i, j + 2, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
 
                     // i+1
                     n = search(i + 1, j - 1, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(rightToLeft(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(search(i + 1, j, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(search(i + 1, j + 1, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(rightToLeft(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i + 1, j, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i + 1, j + 1, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                 }
                 else if (j == maxColumn(i) - 1)
                 {
                     // i
-                    host.addNeighbor(search(i, j - 2, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(search(i, j - 1, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(leftToRight(host).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i, j - 2, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i, j - 1, baseID).asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(leftToRight(host).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     CellNode n = search(i, j + 1, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(leftToRight(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(leftToRight(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     //i+1
-                    host.addNeighbor(search(i + 1, j - 3, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(search(i + 1, j - 2, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i + 1, j - 3, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i + 1, j - 2, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     n = search(i + 1, j - 1, baseID);
-                    host.addNeighbor(n.asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(leftToRight(n).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(n.asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(leftToRight(n).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                 }
                 else
                 {
                     // i
-                    host.addNeighbor(search(i, j - 2, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(search(i, j - 1, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(search(i, j + 1, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(search(i, j + 2, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i, j - 2, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i, j - 1, baseID).asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(search(i, j + 1, baseID).asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(search(i, j + 2, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                     // i+1
-                    host.addNeighbor(search(i + 1, j - 3, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(search(i + 1, j - 2, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(search(i + 1, j - 1, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_EDGE));
-                    host.addNeighbor(search(i + 1, j, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
-                    host.addNeighbor(search(i + 1, j + 1, baseID).asNeighbor(Cons.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i + 1, j - 3, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i + 1, j - 2, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i + 1, j - 1, baseID).asNeighbor(Const.NEIGHBOR_TYPE_EDGE));
+                    host.addNeighbor(search(i + 1, j, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
+                    host.addNeighbor(search(i + 1, j + 1, baseID).asNeighbor(Const.NEIGHBOR_TYPE_VERTEX));
                 }
             }
         }

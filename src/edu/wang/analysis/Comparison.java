@@ -60,7 +60,7 @@ public class Comparison
         private static double coefficientKappa(int level)
         {
             // level > 4
-            double radius = Cons.RADIUS;
+            double radius = Const.RADIUS;
             return Math.pow(Math.PI, 3) * Math.pow(radius, 2) / Math.pow(2, 2 * level + 4);
         }
 

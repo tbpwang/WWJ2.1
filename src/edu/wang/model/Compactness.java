@@ -6,7 +6,7 @@
 
 package edu.wang.model;
 
-import edu.wang.io.Cons;
+import edu.wang.io.Const;
 
 /**
  * @author Zheng WANG
@@ -43,7 +43,7 @@ public class Compactness
 
     public static double getSphereCompactness(double area, double perimeter)
     {
-        double radius = Cons.RADIUS;
+        double radius = Const.RADIUS;
         return perimeter == 0.0 ? 0.0
             : (4 * Math.PI * area * radius * radius - area * area) / Math.pow(radius * perimeter, 2);
     }

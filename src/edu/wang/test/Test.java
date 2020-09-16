@@ -11,8 +11,6 @@ import edu.wang.io.*;
 import edu.wang.model.Area;
 import edu.wang.model.*;
 import gov.nasa.worldwind.geom.*;
-import gov.nasa.worldwind.util.WWMath;
-import org.omg.CORBA.MARSHAL;
 
 import java.util.List;
 
@@ -83,7 +81,7 @@ public class Test
         System.out.println("TestComputeLong4 = " + QTMTriangle.calculateLongitude(p1, p2, 20));
         System.out.println("1E-6\tRadian=\t" + IO.check(Math.toDegrees(1e-6)) + "\tdegree");
         System.out.println("1E-6\tRadian=\t" + (Math.toDegrees(1e-6)) + "\tdegree");
-        System.out.println("1E-6*Radius\t=\t" + Cons.RADIUS * 1E-6 + "\tm");
+        System.out.println("1E-6*Radius\t=\t" + Const.RADIUS * 1E-6 + "\tm");
         System.out.println("TestComputeLong5 = " + QTMTriangle.calculateLongitude(LatLon.fromDegrees(30, -90),
             LatLon.fromDegrees(34, -100), 32));
         System.out.println("TestComputeLong5 = " + QTMTriangle.calculateLongitude(LatLon.fromDegrees(34, -100),
@@ -94,7 +92,7 @@ public class Test
         double testComputeLong5 = QTMTriangle.calculateLongitude(LatLon.fromDegrees(50, -100),
             LatLon.fromDegrees(30, -100), 40);
 
-        System.out.println("1E-4\tdegree = " + Math.toRadians(1e-4) * Cons.RADIUS + "\tm");
+        System.out.println("1E-4\tdegree = " + Math.toRadians(1e-4) * Const.RADIUS + "\tm");
         System.out.println("1E-4\tdegree = " + Math.toRadians(1e-4) + "\tradian");
         System.out.println("1E-4\tdegree = " + IO.check(Math.toRadians(1e-4)) + "\tradian");
         System.out.println("TestComputeLong5 = " + testComputeLong5);
@@ -102,18 +100,18 @@ public class Test
         System.out.println(p13);
         double distance1 = LatLon.greatCircleDistance(p13, p31).radians;
         double distance2 = LatLon.greatCircleDistance(p21, p12).radians;
-        System.out.println("p13->p31 = " + (distance1 <= Cons.EPSILON ? 0.0 : IO.check(distance1 * Cons.RADIUS)));
+        System.out.println("p13->p31 = " + (distance1 <= Const.EPSILON ? 0.0 : IO.check(distance1 * Const.RADIUS)));
         System.out.println(IO.check(180 * distance1 / Math.PI));
         System.out.println("deltaArea = " + Area.unitSphereSurfaceTriangleArea(p1, p31, p3));
         System.out.println(
-            "deltaArea = " + Area.unitSphereSurfaceTriangleArea(p1, p31, p3) * Cons.RADIUS * Cons.RADIUS);
-        System.out.println("delta1000 = " + IO.check(1000 / Cons.RADIUS));
+            "deltaArea = " + Area.unitSphereSurfaceTriangleArea(p1, p31, p3) * Const.RADIUS * Const.RADIUS);
+        System.out.println("delta1000 = " + IO.check(1000 / Const.RADIUS));
         System.out.println(
             "deltaRate = " + Area.unitSphereSurfaceTriangleArea(p1, p31, p3) / Area.unitSphereSurfaceTriangleArea(p1,
                 p2, p3));
-        System.out.println(IO.check(1000 / Cons.RADIUS * 180 / Math.PI));
-        System.out.println("p12->p21 = " + (distance2 <= Cons.EPSILON ? 0.0 : IO.check(distance2 * Cons.RADIUS)));
-        System.out.println(IO.check(distance2 * Cons.RADIUS));
+        System.out.println(IO.check(1000 / Const.RADIUS * 180 / Math.PI));
+        System.out.println("p12->p21 = " + (distance2 <= Const.EPSILON ? 0.0 : IO.check(distance2 * Const.RADIUS)));
+        System.out.println(IO.check(distance2 * Const.RADIUS));
 
         QTMTriangle QTMTriangle = new QTMTriangle(top, left, right, new Geocode("A"));
         edu.wang.model.QTMTriangle[] subQTMTriangle = QTMTriangle.refine();
@@ -248,7 +246,7 @@ public class Test
     {
         // x = [0,PI/2]
 
-//        if (initCoLat <= Cons.EPSILON)
+//        if (initCoLat <= Const.EPSILON)
 //        {
 //            System.out.println("semiLuneArea - Math.PI = ");
 //            System.out.println(semiLuneArea - Math.PI);

@@ -7,6 +7,7 @@
 package edu.wang;
 
 import edu.wang.io.*;
+import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.render.Path;
 
@@ -20,17 +21,20 @@ import java.util.*;
  */
 public class SurfaceTriangle extends Cell
 {
-    private String id;
-
     public SurfaceTriangle(LatLon top, LatLon left, LatLon right, String id)
     {
-        super(top, left, right, id);
-        this.id = id;
+        this(top, left, right, new Geocode(id));
+    }
+
+    public SurfaceTriangle(LatLon top, LatLon left, LatLon right, Geocode geocode)
+    {
+        super(top, left, right, geocode);
     }
 
     public boolean isUp()
     {
-        if (!getId().equals(""))
+        String id = getGeocode().getID();
+        if (!id.equals(""))
         {
             return this.getGeocode().isUp();
         }
@@ -65,17 +69,12 @@ public class SurfaceTriangle extends Cell
         return getGeoVertices().get(2);
     }
 
-    public String getId()
-    {
-        return id;
-    }
-
     public List<Double> edgeLengths()
     {
         List<Double> edges = new ArrayList<>();
-        edges.add(LatLon.greatCircleDistance(getLeft(), getRight()).radians * Cons.RADIUS);// a
-        edges.add(LatLon.greatCircleDistance(getTop(), getRight()).radians * Cons.RADIUS);// b
-        edges.add(LatLon.greatCircleDistance(getLeft(), getTop()).radians * Cons.RADIUS);// c
+        edges.add(LatLon.greatCircleDistance(getLeft(), getRight()).radians * Const.RADIUS);// a
+        edges.add(LatLon.greatCircleDistance(getTop(), getRight()).radians * Const.RADIUS);// b
+        edges.add(LatLon.greatCircleDistance(getLeft(), getTop()).radians * Const.RADIUS);// c
         return edges;
     }
 
@@ -117,42 +116,39 @@ public class SurfaceTriangle extends Cell
         // 返回顶角A
         // 单位球面边长a、b、c
         // 边的余弦公式 cosa = cosb*cosc+sinb*sinc*cosA
-        double a = LatLon.greatCircleDistance(B,C).radians;
-        double b = LatLon.greatCircleDistance(A,C).radians;
-        double c = LatLon.greatCircleDistance(B,A).radians;
-        return computeAngleA(a,b,c);
+        double a = LatLon.greatCircleDistance(B, C).radians;
+        double b = LatLon.greatCircleDistance(A, C).radians;
+        double c = LatLon.greatCircleDistance(B, A).radians;
+        return computeAngleA(a, b, c);
     }
+
     public static Angle computeAngleA(double aEdgeRadian, double bEdgeRadian, double cEdgeRadian)
     {
         // 返回顶角A
         // 单位球面边长a、b、c
         // 边的余弦公式 cosa = cosb*cosc+sinb*sinc*cosA
-        if (aEdgeRadian <= Cons.EPSILON || bEdgeRadian <= Cons.EPSILON || cEdgeRadian <= Cons.EPSILON)
+        if (aEdgeRadian <= Const.EPSILON || bEdgeRadian <= Const.EPSILON || cEdgeRadian <= Const.EPSILON)
         {
             return null;
         }
+
         double angle = Math.acos((Math.cos(aEdgeRadian) - Math.cos(bEdgeRadian) * Math.cos(cEdgeRadian)) / Math.sin(
             bEdgeRadian) / Math.sin(cEdgeRadian));
         return Angle.fromRadians(angle);
     }
 
-    public List<Angle> interiorAngle()
+    public List<Angle> innerAngle()
     {
         List<Double> edges = edgeLengths();
         List<Angle> angles = new ArrayList<>();
+
         double a, b, c;
         Angle A, B, C;
-        a = edges.get(0) / Cons.RADIUS;
-        b = edges.get(1) / Cons.RADIUS;
-        c = edges.get(2) / Cons.RADIUS;
-        // 边的余弦公式 cosa = cosb*cosc+sinb*sinc*cosA
-//        if (a <= Cons.EPSILON || b <= Cons.EPSILON || c <= Cons.EPSILON)
-//        {
-//            return null;
-//        }
-//        A = Math.acos((Math.cos(a) - Math.cos(b) * Math.cos(c)) / (Math.sin(b) * Math.sin(c)));
-//        B = Math.acos((Math.cos(b) - Math.cos(a) * Math.cos(c)) / (Math.sin(a) * Math.sin(c)));
-//        C = Math.acos((Math.cos(c) - Math.cos(b) * Math.cos(a)) / (Math.sin(b) * Math.sin(a)));
+
+        a = edges.get(0) / Const.RADIUS;
+        b = edges.get(1) / Const.RADIUS;
+        c = edges.get(2) / Const.RADIUS;
+
         A = computeAngleA(a, b, c);
         B = computeAngleA(b, a, c);
         C = computeAngleA(c, a, b);
@@ -166,9 +162,9 @@ public class SurfaceTriangle extends Cell
     public double angleStandardDeviation()
     {
         double A, B, C, avg, AA, BB, CC, stdd;
-        A = interiorAngle().get(0).degrees;
-        B = interiorAngle().get(1).degrees;
-        C = interiorAngle().get(2).degrees;
+        A = innerAngle().get(0).degrees;
+        B = innerAngle().get(1).degrees;
+        C = innerAngle().get(2).degrees;
 
         avg = (A + B + C) / 3.0;
         AA = Math.pow(A - avg, 2);
@@ -181,13 +177,13 @@ public class SurfaceTriangle extends Cell
     public double computeArea()
     {
         double unitArea = getUnitArea();
-        return unitArea * Cons.RADIUS * Cons.RADIUS;
+        return unitArea * Const.RADIUS * Const.RADIUS;
     }
 
     public double getUnitArea()
     {
-        List<Angle> interiors = interiorAngle();
-        return (interiors.get(0).radians + interiors.get(1).radians + interiors.get(2).radians - Math.PI);
+        List<Angle> angles = innerAngle();
+        return (angles.get(0).radians + angles.get(1).radians + angles.get(2).radians - Math.PI);
 
 //        int length = getGeoVertices().size();
 //        double excess = -Math.PI * (length - 1 - 2);
@@ -220,15 +216,60 @@ public class SurfaceTriangle extends Cell
 //        return excess;
     }
 
-    @Override
-    public Cell[] refine()
+//    public LatLon getMidpoint(LatLon p1, LatLon p2, String aVKeyType)
+//    {
+//        LatLon mid;
+//        switch (aVKeyType)
+//        {
+//            case AVKey.GREAT_CIRCLE:
+//                mid = LatLon.interpolateGreatCircle(0.5, p1, p2);
+//                break;
+//            case AVKey.RHUMB_LINE:
+//            case AVKey.LOXODROME:
+//                mid = LatLon.interpolateRhumb(0.5, p1, p2);
+//                break;
+//            case AVKey.LINEAR:
+//                mid = LatLon.interpolate(AVKey.LINEAR, 0.5, p1, p2);
+//                break;
+//            default:
+//                mid = null;
+//        }
+//        return mid;
+//    }
+
+    public SurfaceTriangle[] refine(String aVKeyTypeBottom, String aVKeyTypeLeft, String aVKeyTypeRight)
     {
-        return null;
+        LatLon A = getTop();
+        LatLon B = getLeft();
+        LatLon C = getRight();
+
+//        LatLon a = LatLon.interpolateGreatCircle(0.5, B, C);
+        LatLon a = getMidpoint(B, C, aVKeyTypeBottom);
+        LatLon b = getMidpoint(A, C, aVKeyTypeRight);
+        LatLon c = getMidpoint(A, B, aVKeyTypeLeft);
+
+//        String ID = getID();
+        String ID = getGeocode().getID();
+        SurfaceTriangle[] triangles = new SurfaceTriangle[4];
+
+        triangles[0] = new SurfaceTriangle(a, c, b, ID + "0");
+        triangles[1] = new SurfaceTriangle(A, c, b, ID + "1");
+        triangles[2] = new SurfaceTriangle(c, B, a, ID + "2");
+        triangles[3] = new SurfaceTriangle(b, a, C, ID + "3");
+
+        return triangles;
+    }
+
+    @Override
+    public SurfaceTriangle[] refine()
+    {
+        return refine(AVKey.GREAT_CIRCLE, AVKey.GREAT_CIRCLE, AVKey.GREAT_CIRCLE);
     }
 
     @Override
     public Path[] renderPath()
     {
+        // TODO
         return null;
     }
 }

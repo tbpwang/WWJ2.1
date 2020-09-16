@@ -7,6 +7,7 @@
 package edu.wang;
 
 import edu.wang.io.*;
+import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.render.*;
 import gov.nasa.worldwind.util.Logging;
@@ -17,7 +18,7 @@ import java.util.*;
  * @author Zheng WANG
  * @create 2019/4/28
  * @description 闭合基本单元格，attributes of a cell
- * @parameter 构成单元格的顶点（初始顶点和终结顶点相同），地理编码ID
+ * @parameter 构成单元格的顶点（初始顶点和终结顶点buyong相同），地理编码ID
  */
 public abstract class Cell extends DGG implements Area, Refinement
 {
@@ -26,6 +27,7 @@ public abstract class Cell extends DGG implements Area, Refinement
 //    // "TRI"(3),"QUA"(4),"HEX"(6)....
     private int shape;
     private int level;
+    private boolean isClosed;
 
     private List<LatLon> geoVertices;
 
@@ -35,7 +37,7 @@ public abstract class Cell extends DGG implements Area, Refinement
     // Geo-coding
     private Geocode geocode;
 
-    public Cell(Iterable<? extends LatLon> locations, String ID)
+    public Cell(Iterable<? extends LatLon> locations, Geocode geocode)
     {
         if (locations == null)
         {
@@ -52,12 +54,6 @@ public abstract class Cell extends DGG implements Area, Refinement
 
         shape = geoVertices.size();
 
-//        if (!geoVertices.get(0).equals(geoVertices.get(shape)))
-//        {
-//            geoVertices.add(geoVertices.get(0));
-//            shape++;
-//        }
-
         if (shape < 3)
         {
             String message = Logging.getMessage("lackValue.VertexLessThan3");
@@ -65,12 +61,13 @@ public abstract class Cell extends DGG implements Area, Refinement
             throw new IllegalArgumentException(message);
         }
         //this.globe = DGGS.getGlobe();
-        center = LatLon.getCenter(Cons.getGlobe(), locations);
-        geocode = new Geocode(ID);
-        this.level = ID.length() - 1;
+        center = LatLon.getCenter(Const.getGlobe(), locations);
+        this.geocode = geocode;
+        this.level = geocode.getID().length() - 1;
+        isClosed = geoVertices.get(0).equals(geoVertices.get(shape - 1));
     }
 
-    public Cell(LatLon top, LatLon left, LatLon right, String ID)
+    public Cell(LatLon top, LatLon left, LatLon right, Geocode geocode)
     {
         if (top == null || left == null || right == null)
         {
@@ -81,7 +78,8 @@ public abstract class Cell extends DGG implements Area, Refinement
         geoVertices = new ArrayList<>();
         ArrayList<LatLon> temp = new ArrayList<>();
         temp.add(IO.check(top));
-        if (left.getLongitude().degrees < right.getLongitude().degrees)
+        double delta = Math.abs((right.getLongitude().subtract(left.getLongitude())).getRadians());
+        if (delta > Const.EPSILON)
         {
             temp.add(IO.check(left));
             temp.add(IO.check(right));
@@ -91,12 +89,18 @@ public abstract class Cell extends DGG implements Area, Refinement
             temp.add(IO.check(right));
             temp.add(IO.check(left));
         }
-        center = IO.check(LatLon.getCenter(Cons.getGlobe(), temp));
+        center = IO.check(LatLon.getCenter(Const.getGlobe(), temp));
         geoVertices.addAll(temp);
         // geoVertices.add(top);
         shape = 3;
-        geocode = new Geocode(ID);
-        this.level = ID.length() - 1;
+        this.geocode = geocode;
+        this.level = geocode.getID().length() - 1;
+        isClosed = false;
+    }
+
+    public boolean isClosed()
+    {
+        return isClosed;
     }
 
     public int getLevel()
@@ -106,7 +110,30 @@ public abstract class Cell extends DGG implements Area, Refinement
 
     public abstract double getUnitArea();
 
-//    public abstract double computeArea();
+
+    public LatLon getMidpoint(LatLon p1, LatLon p2, String aVKeyType)
+    {
+        LatLon point1, point2;
+        point1 = IO.check(p1);
+        point2 = IO.check(p2);
+        LatLon mid;
+        switch (aVKeyType)
+        {
+            case AVKey.GREAT_CIRCLE:
+                mid = LatLon.interpolateGreatCircle(0.5, point1, point2);
+                break;
+            case AVKey.RHUMB_LINE:
+            case AVKey.LOXODROME:
+                mid = LatLon.interpolateRhumb(0.5, point1, point2);
+                break;
+            case AVKey.LINEAR:
+                mid = LatLon.interpolate(AVKey.LINEAR, 0.5, point1, point2);
+                break;
+            default:
+                mid = null;
+        }
+        return IO.check(mid);
+    }
 
     public abstract Cell[] refine();
 

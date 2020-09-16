@@ -95,7 +95,7 @@ public class OctahedronInscribed
         System.out.println("MeanLocation" + meanLocation);
         double dispersion = 1.0 - resultantLength / i;
         System.out.println("dispersionUnit = " + dispersion);
-        double rs = Cons.getGlobe().getRadius();
+        double rs = Const.getGlobe().getRadius();
         System.out.println("dispersion = " + dispersion * rs);
     }
 }
