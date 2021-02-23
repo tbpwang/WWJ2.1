@@ -6,8 +6,9 @@
 
 package edu.wang.model;
 
-import edu.wang.Mesh;
+import edu.wang.*;
 import edu.wang.io.IO;
+import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.geom.LatLon;
 
 import java.util.*;
@@ -31,7 +32,7 @@ public class QTMTriangleMesh extends SurfaceTriangleMesh
         return cutMesh(1);
     }
 
-    public QTMTriangleMesh cutMesh(int octant)
+    public QTMTriangleMesh cutMesh2(int octant)
     {
         // 第octant个八分面
         int level = this.getLevel();
@@ -52,6 +53,8 @@ public class QTMTriangleMesh extends SurfaceTriangleMesh
             for (int i = 0; i < level; i++)
             {
                 List<QTMTriangle> temp = new ArrayList<>();
+//                List<QTMTriangle> temp = new ArrayList<>(
+//                    Arrays.asList(triangle.refine(AVKey.RHUMB_LINE, AVKey.GREAT_CIRCLE, AVKey.GREAT_CIRCLE)));
                 for (QTMTriangle tri : subQTMTriangles)
                 {
                     // refine
@@ -72,6 +75,78 @@ public class QTMTriangleMesh extends SurfaceTriangleMesh
                 this.addNode(t);
             }
             subQTMTriangles.clear();
+        }
+
+        List<CellNode> cellNodeList = this.getCellNodes();
+
+        int size = cellNodeList.size() / 8;
+        int fromPosition, toPosition;
+        if (octant >= 1 && octant <= 8)
+        {
+            fromPosition = (octant - 1) * size;
+            toPosition = octant * size;
+        }
+        else
+        {
+            fromPosition = 0;
+            toPosition = size;
+        }
+        List<CellNode> cellNodeListTemp = new ArrayList<>(cellNodeList.subList(fromPosition, toPosition));
+        for (CellNode aCell : cellNodeListTemp)
+        {
+//            tempMesh.fillNeighbors(n);
+            this.fillNeighbors(aCell);
+        }
+
+        mesh.setCellNodes(cellNodeListTemp);
+
+        return mesh;
+    }
+
+    public QTMTriangleMesh cutMesh(int octant)
+    {
+        // 第octant个八分面
+        int level = this.getLevel();
+//        MidArcTriangleMesh tempMesh = new MidArcTriangleMesh(level);
+        QTMTriangleMesh mesh = new QTMTriangleMesh(level);
+        List<QTMTriangle> baseTriangles = new ArrayList<>();
+        List<QTMTriangle> subQTMTriangles;// = new ArrayList<>();
+
+        for (SphericalTriangleOctahedron triangle : SphericalTriangleOctahedron.values())
+        {
+            // 给出全部球形多面体 spherical polyhedra
+            baseTriangles.add(QTMTriangle.cast(triangle.baseTriangle()));
+        }
+
+        for (QTMTriangle triangle : baseTriangles)
+        {
+            // base triangle as init triangle
+            subQTMTriangles = new ArrayList<>(Collections.singletonList(triangle));
+//            subQTMTriangles.add(triangle);
+            for (int i = 0; i < level; i++)
+            {
+                List<QTMTriangle> temp = new ArrayList<>();
+                // 循环一次深入一层
+                for (QTMTriangle tri : subQTMTriangles)
+                {
+                    // 对subQTMTriangles中的三角形继续剖分
+                    // refine
+                    temp.addAll(Arrays.asList(tri.refine()));
+                }
+
+                // 清理一次
+                subQTMTriangles.clear();
+                // 成为新的父层
+                subQTMTriangles.addAll(temp);
+            }
+            // mesh
+            // subQTMTriangles为一个baseTriangle的第LEVEL层
+            for (QTMTriangle t : subQTMTriangles)
+            {
+                // 把整个第Level层加入到Mesh的节点中
+                this.addNode(t);
+            }
+//            subQTMTriangles.clear();
         }
 
         List<CellNode> cellNodeList = this.getCellNodes();

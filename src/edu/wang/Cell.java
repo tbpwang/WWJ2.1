@@ -8,8 +8,8 @@ package edu.wang;
 
 import edu.wang.io.*;
 import gov.nasa.worldwind.avlist.AVKey;
-import gov.nasa.worldwind.geom.LatLon;
-import gov.nasa.worldwind.render.*;
+import gov.nasa.worldwind.geom.*;
+import gov.nasa.worldwind.render.Path;
 import gov.nasa.worldwind.util.Logging;
 
 import java.util.*;
@@ -110,7 +110,6 @@ public abstract class Cell extends DGG implements Area, Refinement
 
     public abstract double getUnitArea();
 
-
     public LatLon getMidpoint(LatLon p1, LatLon p2, String aVKeyType)
     {
         LatLon point1, point2;
@@ -172,7 +171,8 @@ public abstract class Cell extends DGG implements Area, Refinement
 
         int total = geoVertices.size();
         int number;
-        if (LatLon.equals(geoVertices.get(0), geoVertices.get(total - 1)))
+//        if (LatLon.equals(geoVertices.get(0), geoVertices.get(total - 1)))
+        if (isClosed())
         {
             number = total - 1;
         }
@@ -192,6 +192,24 @@ public abstract class Cell extends DGG implements Area, Refinement
             ", " + getShape() +
             ", " + locations.toString() +
             '}';
+    }
+
+    public String coordinatesVec4WithID()
+    {
+        StringBuilder vec4WithID = new StringBuilder(geocode.getID() + "\t");
+        int number;
+        number = isClosed() ? geoVertices.size() - 1 : geoVertices.size();
+        List<LatLon> latLons = geoVertices.subList(0, number);
+
+        Vec4 temp;
+        for (LatLon latLon : latLons)
+        {
+            temp = IO.latLonToVec4(latLon);
+            vec4WithID.append(IO.check(temp.getX(), 6)).append("\t").append(IO.check(temp.getY(), 6)).append(
+                "\t").append(IO.check(temp.getZ(), 6)).append("\t");
+        }
+
+        return vec4WithID.toString();
     }
 
 //    @Override

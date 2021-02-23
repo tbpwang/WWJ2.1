@@ -6,16 +6,16 @@
 
 package edu.wang.model;
 
-import edu.wang.SurfaceTriangle;
 import edu.wang.*;
 import edu.wang.io.*;
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.render.Path;
-//import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+
+//import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Zheng WANG
@@ -61,34 +61,36 @@ public class QTMTriangle extends SurfaceTriangle
     @Override
     public double getUnitArea()
     {
-//        return getUnitArea(true);
-        return someAreas();
+//        return calculateCellArea(true);
+        return calculateCellArea() / Const.RADIUS / Const.RADIUS;
     }
 
-    private double someAreas()
+    public double calculateCellArea()
     {
         // 微分法
 
         int interval = 1000;
         double minLon = getLeft().getLongitude().radians;
         double maxLon = getRight().getLongitude().radians;
-//        double lat1 = getLeft().getLatitude().radians;
-//        double lat2 = getRight().getLatitude().radians;
+        double epsilon = Math.pow(10, -Const.HALF_PRECISION);
 
         double delta = IO.check((maxLon - minLon) / interval);
-        while (delta <= Const.EPSILON)
+        while (delta <= epsilon)
         {
             interval = interval / 10;
             delta = IO.check((maxLon - minLon) / interval);
         }
         LatLon tempFrom, tempTo;
-        double addArea = 0.0;
-        for (int i = 0; i < interval; i++)
-        {
-            tempFrom = LatLon.interpolateRhumb((double) i / interval, getLeft(), getRight());
-            tempTo = LatLon.interpolateRhumb((i + 1.0) / interval, getLeft(), getRight());
-            addArea += Area.unitSphereSurfaceTriangleArea(getTop(), tempFrom, tempTo);
-        }
+        double addArea;
+        tempTo = LatLon.interpolateRhumb(1.0 / interval, getLeft(), getRight());
+        addArea = Area.sphericalTriangleArea(getTop(), getLeft(), tempTo) * interval;
+//        for (int i = 0; i < interval; i++)
+//        {
+//            tempFrom = LatLon.interpolateRhumb((double) i / interval, getLeft(), getRight());
+//            tempTo = LatLon.interpolateRhumb((i + 1.0) / interval, getLeft(), getRight());
+//            addArea += Area.sphericalTriangleArea(getTop(), tempFrom, tempTo);
+////            addArea += Area.unitSphereTriangleArea(getTop(), tempFrom, tempTo);
+//        }
 
         return addArea;
 
@@ -109,7 +111,7 @@ public class QTMTriangle extends SurfaceTriangle
 //                to += delta;
 //            }
 //            SurfaceTriangle triangle = new SurfaceTriangle(getTop(), left, right, "");
-//            area += triangle.getUnitArea();
+//            area += triangle.calculateCellArea();
 //        }
 //        return area;
     }
@@ -130,66 +132,71 @@ public class QTMTriangle extends SurfaceTriangle
         Vec4 left = IO.latLonToVec4(leftSide);
         Vec4 right = IO.latLonToVec4(rightSide);
         Vec4 l2r = left.cross3(right);
-        return l2r.angleBetween3(pole);
+        double degree = l2r.angleBetween3(pole).degrees;
+        if (degree > 90)
+            degree = 180 - 90;
+        return Angle.fromDegrees(degree);
     }
 
-    public double getUnitArea(boolean isGeographicalPole)
+    public double calculateCellArea(boolean isParallel)
     {
         // 目前仅针对地理极点的小圆弧为底大圆弧为腰的三角形面积计算
         // 任意极点的上述三角形面积计算待定TODO:
         // if (poleNorthSouth)
-        double radius = 1.0;
+//        double radius = Const.RADIUS;
+        double epsilon = Const.EPSILON;
 
-        double minLongitude = getLeft().getLongitude().degrees;
-        double maxLongitude = getRight().getLongitude().degrees;
-
-        double deltaDegree = maxLongitude - minLongitude;
-        double rate = deltaDegree / 360.0;
+//        double minLongitude = Math.min(getLeft().getLongitude().degrees, getRight().getLongitude().degrees);
+//        double maxLongitude = Math.max(getLeft().getLongitude().degrees, getRight().getLongitude().degrees);
+//
+//        double deltaDegree = maxLongitude - minLongitude;
+//        double rate = deltaDegree / 360.0;
 
         double area;
 
         // latitude范围[0,90]
-        Angle bottom = getLeft().latitude.add(getRight().latitude).divide(2.0);
-        double areaPBC = 2 * Math.PI * radius * (1.0 - Math.abs(bottom.sin())) * rate;
+//        Angle bottom = getLeft().latitude.add(getRight().latitude).divide(2.0);
+//        double areaPBC = 2 * Math.PI * Math.pow(radius, 2) * (1.0 - Math.abs(bottom.sin())) * rate;
+        double areaPBC = Area.calculateCrownArea(getLeft(), getRight());
 
         double topLatitudeDegree = getTop().getLatitude().degrees;
-        if (isUp() && topLatitudeDegree > 0 && 90.0 - topLatitudeDegree <= Const.EPSILON)
+
+        if (isUp() && Math.abs(90.0 - topLatitudeDegree) <= epsilon)
         {
             return areaPBC;
         }
-        if (isUp() && topLatitudeDegree < 0 && 90.0 + topLatitudeDegree <= Const.EPSILON)
+        if (!isUp() && Math.abs(90.0 + topLatitudeDegree) <= epsilon)
         {
             return areaPBC;
         }
 
         double topLongitudeDegree = getTop().getLongitude().degrees;
-//        double leftLongitudeDegree = getLeft().getLongitude().degrees;
-//        double rightLongitudeDegree = getRight().getLongitude().degrees;
 
         // 只考虑北半球
         // pole = (90,0)
         LatLon pole = LatLon.fromDegrees(90.0, 0.0);
         if (isUp())
         {
-            if (topLongitudeDegree <= minLongitude)
+            if (topLongitudeDegree <= getLeft().longitude.degrees)
             {
                 // PAB
                 double areaPAB = 0.0;
-                if (topLongitudeDegree != minLongitude)
+                if (topLongitudeDegree != getLeft().longitude.degrees)
                 {
-                    areaPAB = Area.unitSphereSurfaceTriangleArea(pole, getTop(), getLeft());
+                    areaPAB = Area.sphericalTriangleArea(pole, getTop(), getLeft());
                 }
                 // PAC
-                double areaPAC = Area.unitSphereSurfaceTriangleArea(pole, getTop(), getRight());
+                double areaPAC = Area.sphericalTriangleArea(pole, getTop(), getRight());
 
                 area = areaPAB + areaPBC - areaPAC;
             }
-            else if (topLongitudeDegree > minLongitude && topLongitudeDegree < maxLongitude)
+            else if (topLongitudeDegree > getLeft().longitude.degrees
+                && topLongitudeDegree < getRight().longitude.degrees)
             {
                 // PBA
-                double areaPBA = Area.unitSphereSurfaceTriangleArea(pole, getLeft(), getTop());
+                double areaPBA = Area.sphericalTriangleArea(pole, getLeft(), getTop());
                 // PAC
-                double areaPAC = Area.unitSphereSurfaceTriangleArea(pole, getTop(), getRight());
+                double areaPAC = Area.sphericalTriangleArea(pole, getTop(), getRight());
 
                 area = areaPBC - areaPBA - areaPAC;
             }
@@ -197,12 +204,12 @@ public class QTMTriangle extends SurfaceTriangle
             {
                 // topLongitudeDegree >= maxLongitude
                 // PBA
-                double areaPBA = Area.unitSphereSurfaceTriangleArea(pole, getLeft(), getTop());
+                double areaPBA = Area.sphericalTriangleArea(pole, getLeft(), getTop());
                 // PCA
                 double areaPCA = 0.0;
-                if (topLongitudeDegree != maxLongitude)
+                if (topLongitudeDegree != getRight().longitude.degrees)
                 {
-                    areaPCA = Area.unitSphereSurfaceTriangleArea(pole, getLeft(), getTop());
+                    areaPCA = Area.sphericalTriangleArea(pole, getRight(), getTop());
                 }
 
                 area = areaPBC + areaPCA - areaPBA;
@@ -211,25 +218,26 @@ public class QTMTriangle extends SurfaceTriangle
         else
         {
             // down
-            if (topLongitudeDegree <= minLongitude)
+            if (topLongitudeDegree <= getLeft().longitude.degrees)
             {
                 // PAB
                 double areaPAB = 0.0;
-                if (topLongitudeDegree != minLongitude)
+                if (topLongitudeDegree != getLeft().longitude.degrees)
                 {
-                    areaPAB = Area.unitSphereSurfaceTriangleArea(pole, getTop(), getLeft());
+                    areaPAB = Area.sphericalTriangleArea(pole, getTop(), getLeft());
                 }
                 // PAC
-                double areaPAC = Area.unitSphereSurfaceTriangleArea(pole, getTop(), getRight());
+                double areaPAC = Area.sphericalTriangleArea(pole, getTop(), getRight());
 
                 area = areaPAC - areaPAB - areaPBC;
             }
-            else if (topLongitudeDegree > minLongitude && topLongitudeDegree < maxLongitude)
+            else if (topLongitudeDegree > getLeft().longitude.degrees
+                && topLongitudeDegree < getRight().longitude.degrees)
             {
                 // PBA
-                double areaPBA = Area.unitSphereSurfaceTriangleArea(pole, getLeft(), getTop());
+                double areaPBA = Area.sphericalTriangleArea(pole, getLeft(), getTop());
                 // PAC
-                double areaPAC = Area.unitSphereSurfaceTriangleArea(pole, getTop(), getRight());
+                double areaPAC = Area.sphericalTriangleArea(pole, getTop(), getRight());
 
                 area = areaPBA + areaPAC - areaPBC;
             }
@@ -237,12 +245,12 @@ public class QTMTriangle extends SurfaceTriangle
             {
                 // topLongitudeDegree >= maxLongitude
                 // PBA
-                double areaPBA = Area.unitSphereSurfaceTriangleArea(pole, getLeft(), getTop());
+                double areaPBA = Area.sphericalTriangleArea(pole, getLeft(), getTop());
                 // PCA
                 double areaPCA = 0.0;
-                if (topLongitudeDegree != maxLongitude)
+                if (topLongitudeDegree != getRight().longitude.degrees)
                 {
-                    areaPCA = Area.unitSphereSurfaceTriangleArea(pole, getRight(), getTop());
+                    areaPCA = Area.sphericalTriangleArea(pole, getRight(), getTop());
                 }
 
                 area = areaPBA - areaPBC - areaPCA;
@@ -283,7 +291,7 @@ public class QTMTriangle extends SurfaceTriangle
     {
         if (isStrictQTM())
             return 0.0;
-        double area = this.getUnitArea(true);
+        double area = this.calculateCellArea(true);
 
         QTMTriangle[] subs;
         if (subTriangles == null)
@@ -291,16 +299,17 @@ public class QTMTriangle extends SurfaceTriangle
         else
             subs = subTriangles;
 
-        double area0 = subs[0].getUnitArea(true);
-        double area1 = subs[1].getUnitArea(true);
-        double area2 = subs[2].getUnitArea(true);
-        double area3 = subs[3].getUnitArea(true);
+        double area0 = subs[0].calculateCellArea(true);
+        double area1 = subs[1].calculateCellArea(true);
+        double area2 = subs[2].calculateCellArea(true);
+        double area3 = subs[3].calculateCellArea(true);
         return area - area0 - area1 - area2 - area3;
     }
 
     @Override
-    public QTMTriangle[] refine()
+    public QTMTriangle[] refine(String aVKeyTypeBottom, String aVKeyTypeLeft, String aVKeyTypeRight)
     {
+        //return super.refine(aVKeyTypeBottom, aVKeyTypeLeft, aVKeyTypeRight);
         // QTM
         if (subTriangles != null)
         {
@@ -315,12 +324,13 @@ public class QTMTriangle extends SurfaceTriangle
         LatLon B = getLeft();
         LatLon C = getRight();
 
-        double latB = B.getLatitude().degrees;
-        double latC = C.getLatitude().degrees;
-        // double delta = latC-latB;
-        LatLon aa = LatLon.interpolateRhumb(0.5, B, C);
-        LatLon bb = LatLon.interpolateGreatCircle(0.5, A, C);
-        LatLon cc = LatLon.interpolateGreatCircle(0.5, A, B);
+        LatLon aa = getMidpoint(B, C, aVKeyTypeBottom);
+        LatLon bb = getMidpoint(A, C, aVKeyTypeRight);
+        LatLon cc = getMidpoint(A, B, aVKeyTypeLeft);
+
+//        LatLon aa = LatLon.interpolateRhumb(0.5, B, C);
+//        LatLon bb = LatLon.interpolateGreatCircle(0.5, A, C);
+//        LatLon cc = LatLon.interpolateGreatCircle(0.5, A, B);
 
         subTriangles = new QTMTriangle[4];
         Geocode[] geocodes = getGeocode().binaryRefine();
@@ -330,6 +340,12 @@ public class QTMTriangle extends SurfaceTriangle
         subTriangles[3] = new QTMTriangle(bb, aa, C, geocodes[3]);
 
         return subTriangles;
+    }
+
+    @Override
+    public QTMTriangle[] refine()
+    {
+        return refine(AVKey.RHUMB_LINE, AVKey.GREAT_CIRCLE, AVKey.GREAT_CIRCLE);
     }
 
     private QTMTriangle[] refine2()
@@ -750,11 +766,11 @@ public class QTMTriangle extends SurfaceTriangle
     public List<Double> edgeLengths()
     {
         List<Double> edges = new ArrayList<>();
-        double delt = Math.abs(getLeft().longitude.radians - getRight().longitude.radians);
 
-        edges.add(Const.RADIUS * getRight().latitude.cos() * delt);// a
-        edges.add(LatLon.greatCircleDistance(getTop(), getRight()).radians * Const.RADIUS);// b
-        edges.add(LatLon.greatCircleDistance(getLeft(), getTop()).radians * Const.RADIUS);// c
+        edges.add(Length.calculateArcLength(AVKey.RHUMB_LINE, getLeft(), getRight()));//a
+        edges.add(Length.calculateArcLength(AVKey.GREAT_CIRCLE, getTop(), getRight()));//b
+        edges.add(Length.calculateArcLength(AVKey.GREAT_CIRCLE, getLeft(), getTop()));//c
+
         return edges;
     }
 
@@ -763,8 +779,17 @@ public class QTMTriangle extends SurfaceTriangle
     {
         List<Angle> angles = new ArrayList<>();
         angles.add(SurfaceTriangle.computeAngleA(getTop(), getLeft(), getRight()));
-        angles.add(bottomAngle(getLeft(), getTop()));
-        angles.add(bottomAngle(getTop(), getRight()));
+
+        double leftDgr = bottomAngle(getLeft(), getTop()).degrees;
+        if (leftDgr > 90.0)
+            leftDgr = 180.0 - leftDgr;
+        angles.add(Angle.fromDegrees(leftDgr));
+
+        double rightDgr = bottomAngle(getTop(), getRight()).degrees;
+        if (rightDgr > 90.0)
+            rightDgr = 180.0 - leftDgr;
+        angles.add(Angle.fromDegrees(rightDgr));
+
         return angles;
     }
 

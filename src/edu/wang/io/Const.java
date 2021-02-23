@@ -6,16 +6,11 @@
 
 package edu.wang.io;
 
-import edu.wang.Geocode;
 import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.globes.*;
 import gov.nasa.worldwind.render.*;
-import gov.nasa.worldwind.util.Logging;
-import gov.nasa.worldwindx.examples.ParallelPaths;
 
 import java.awt.*;
-import java.util.*;
-import java.util.List;
 
 /**
  * @author Zheng WANG
@@ -25,14 +20,15 @@ import java.util.List;
  */
 public final class Const
 {
-    public final static double EPSILON = 1.0E-6;
     private static Vec4 ORIGIN = Vec4.ZERO;
     // 长半轴a＝6378137(m), Earth.WGS84_EQUATORIAL_RADIUS
     // 与CGCS2000或WGS84相同表面积的球半径近似为：R2= 6371007.2(m)
     public final static double RADIUS = 6371007.2;//6371.007km
 //    public final static double radius = 6371.0072;
 
-    public final static int PRECISION = 6;
+    public final static int PRECISION = 12;
+    public final static int HALF_PRECISION = 6;
+    public final static double EPSILON = Math.pow(10, -HALF_PRECISION);
 
     public static int NEIGHBOR_TYPE_EDGE = 1;
 
@@ -68,26 +64,49 @@ public final class Const
         return new EarthFlat();
     }
 
-    public static ShapeAttributes defaultPolygonAttribute()
+    public static ShapeAttributes defaultPolygonAttribute(Color color)
+    {
+        return defaultPolygonAttribute(0.5, color);
+    }
+
+    public static ShapeAttributes defaultPolygonAttribute(double opacity, Color color)
     {
         ShapeAttributes attributes = new BasicShapeAttributes();
 
         // for Path
-        attributes.setOutlineMaterial(new Material(new Color(20, 120, 20)));
+//        attributes.setOutlineMaterial(new Material(new Color(20, 120, 20)));
+        attributes.setOutlineMaterial(new Material(color));
+        attributes.setDrawOutline(false);
+////        attributes.setEnableLighting(false);
+//        attributes.setOutlineOpacity(0.0001);
 
         // for Polygon
-        attributes.setInteriorMaterial(new Material(new Color(20, 100, 20)));
-        attributes.setInteriorOpacity(0.008);
+        attributes.setInteriorMaterial(new Material(color));
+        attributes.setInteriorOpacity(opacity);
+//        attributes.setInteriorOpacity(0.008);
 
         return attributes;
+    }
+
+    public static ShapeAttributes defaultPolygonAttribute(double opacity)
+    {
+        return defaultPolygonAttribute(opacity, new Color(237, 177, 32));
+    }
+
+    public static ShapeAttributes defaultPolygonAttribute()
+    {
+        return defaultPolygonAttribute(0.3);
     }
 
     public static ShapeAttributes defaultPathAttribute()
     {
         ShapeAttributes attributes = new BasicShapeAttributes();
         // for Path
-        attributes.setOutlineMaterial(new Material(new Color(20, 150, 20)));
-        attributes.setOutlineWidth(2.0);
+        attributes.setOutlineMaterial(new Material(new Color(255, 255, 255)));
+//        attributes.setOutlineMaterial(new Material(new Color(250, 250, 0)));
+//        attributes.setOutlineMaterial(new Material(new Color(0, 0, 100)));
+//        attributes.setOutlineMaterial(new Material(new Color(200, 200, 200)));
+        attributes.setOutlineWidth(4.0);
 
         return attributes;
     }

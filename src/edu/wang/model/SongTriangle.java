@@ -101,7 +101,7 @@ public class SongTriangle extends SurfaceTriangle
         {
             return Double.NaN;
         }
-        double greatArea = Area.unitSphereSurfaceTriangleArea(smallCircle.getPole(), smallCircle.getFirst().latLon,
+        double greatArea = Area.unitSphereTriangleArea(smallCircle.getPole(), smallCircle.getFirst().latLon,
             smallCircle.getLast().latLon);
         double smallArea = arcCrownArea(smallCircle);
         // 正负都有可能，
@@ -127,7 +127,7 @@ public class SongTriangle extends SurfaceTriangle
         if (bottomEdge.isHasCoLatitude() && leftEdge.isHasCoLatitude() && rightEdge.isHasCoLatitude())
         {
             double sum = semiLune(bottomEdge) - semiLune(leftEdge) - semiLune(rightEdge);
-            double greatArea = Area.unitSphereSurfaceTriangleArea(getTop(), getLeft(), getRight());
+            double greatArea = Area.unitSphereTriangleArea(getTop(), getLeft(), getRight());
             return greatArea + sum;
         }
         else
@@ -222,7 +222,7 @@ public class SongTriangle extends SurfaceTriangle
         // 对于右三角形：
         rSemiLuneArea = calculateSemiLuneArea(rightSide, rCoLatitudeAngle);
         double area = getUnitArea() / 4.0;
-        double triArea = Area.unitSphereSurfaceTriangleArea(relativeLeftEdge.getFirst().latLon, relativeLeftEdge.getLast().latLon,
+        double triArea = Area.unitSphereTriangleArea(relativeLeftEdge.getFirst().latLon, relativeLeftEdge.getLast().latLon,
             relativeRightEdge.getFirst().latLon);
         double dArea1 = triArea - lSemiLuneArea - rSemiLuneArea;
         double bSemiLuneArea = area - dArea1;

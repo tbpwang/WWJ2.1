@@ -45,9 +45,9 @@ public class QTMCenter extends ApplicationTemplate
 
         static List<QTMTriangle> initTriangles(int sub)
         {
-            LatLon p1 = LatLon.fromDegrees(50, 40);
-            LatLon p2 = LatLon.fromDegrees(40, 32);
-            LatLon p3 = LatLon.fromDegrees(40, 48);
+            LatLon p1 = LatLon.fromDegrees(90, 0);
+            LatLon p2 = LatLon.fromDegrees(0, 0);
+            LatLon p3 = LatLon.fromDegrees(0, 90);
             QTMTriangle triangle = new QTMTriangle(p1, p2, p3, new Geocode("A"));
             List<QTMTriangle> QTMTriangles = new ArrayList<>();
             QTMTriangles.add(triangle);

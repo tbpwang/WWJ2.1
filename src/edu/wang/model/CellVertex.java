@@ -9,20 +9,22 @@ package edu.wang.model;
 import edu.wang.io.IO;
 import gov.nasa.worldwind.geom.*;
 
-public class GridPoint
+public class CellVertex
 {
+    // cell vertex
     public LatLon latLon;
     public Vec4 vec4;
     private double height;
+//    private String someValue;
 
-    public GridPoint(LatLon latLon)
+    public CellVertex(LatLon latLon)
     {
         this.latLon = latLon;
         vec4 = IO.latLonToVec4(latLon);
         height = 0.0;
     }
 
-    public GridPoint(Vec4 vec4)
+    public CellVertex(Vec4 vec4)
     {
         this.vec4 = vec4;
         latLon = IO.vec4ToLatLon(vec4);

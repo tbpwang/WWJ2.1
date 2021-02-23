@@ -56,7 +56,7 @@ public class MiddleArcSurfaceTriangle extends SurfaceTriangle
 //    }
 //    public double computeArea()
 //    {
-//        return getUnitArea() * Const.getGlobe().radius() * Const.getGlobe().radius();
+//        return calculateCellArea() * Const.getGlobe().radius() * Const.getGlobe().radius();
 //    }
 
     public SurfacePolygon[] renderPolygon()

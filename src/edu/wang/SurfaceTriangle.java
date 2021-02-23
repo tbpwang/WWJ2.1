@@ -7,6 +7,7 @@
 package edu.wang;
 
 import edu.wang.io.*;
+import edu.wang.model.Length;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.render.Path;
@@ -71,10 +72,21 @@ public class SurfaceTriangle extends Cell
 
     public List<Double> edgeLengths()
     {
+        List<Double> list = new ArrayList<>();
+        for (int i = 0; i < edgeLengthsInUnit().size(); i++)
+        {
+            list.add(edgeLengthsInUnit().get(i) * Const.RADIUS);
+        }
+        return list;
+    }
+
+    public List<Double> edgeLengthsInUnit()
+    {
         List<Double> edges = new ArrayList<>();
-        edges.add(LatLon.greatCircleDistance(getLeft(), getRight()).radians * Const.RADIUS);// a
-        edges.add(LatLon.greatCircleDistance(getTop(), getRight()).radians * Const.RADIUS);// b
-        edges.add(LatLon.greatCircleDistance(getLeft(), getTop()).radians * Const.RADIUS);// c
+
+        edges.add(Length.calculateArcLengthInUnit(AVKey.GREAT_CIRCLE, getLeft(), getRight()));// a
+        edges.add(Length.calculateArcLengthInUnit(AVKey.GREAT_CIRCLE, getTop(), getRight()));// b
+        edges.add(Length.calculateArcLengthInUnit(AVKey.GREAT_CIRCLE, getLeft(), getTop()));// c
         return edges;
     }
 
@@ -116,38 +128,40 @@ public class SurfaceTriangle extends Cell
         // 返回顶角A
         // 单位球面边长a、b、c
         // 边的余弦公式 cosa = cosb*cosc+sinb*sinc*cosA
-        double a = LatLon.greatCircleDistance(B, C).radians;
-        double b = LatLon.greatCircleDistance(A, C).radians;
-        double c = LatLon.greatCircleDistance(B, A).radians;
+        double a = Length.calculateArcLengthInUnit(AVKey.GREAT_CIRCLE, B, C);
+        double b = Length.calculateArcLengthInUnit(AVKey.GREAT_CIRCLE, A, C);
+        double c = Length.calculateArcLengthInUnit(AVKey.GREAT_CIRCLE, B, A);
         return computeAngleA(a, b, c);
     }
 
-    public static Angle computeAngleA(double aEdgeRadian, double bEdgeRadian, double cEdgeRadian)
+    private static Angle computeAngleA(double aEdgeRadian, double bEdgeRadian, double cEdgeRadian)
     {
         // 返回顶角A
         // 单位球面边长a、b、c
         // 边的余弦公式 cosa = cosb*cosc+sinb*sinc*cosA
         if (aEdgeRadian <= Const.EPSILON || bEdgeRadian <= Const.EPSILON || cEdgeRadian <= Const.EPSILON)
         {
-            return null;
+            return Angle.ZERO;
         }
 
         double angle = Math.acos((Math.cos(aEdgeRadian) - Math.cos(bEdgeRadian) * Math.cos(cEdgeRadian)) / Math.sin(
             bEdgeRadian) / Math.sin(cEdgeRadian));
+        if (angle > Math.PI / 2)
+            angle = Math.PI - angle;
         return Angle.fromRadians(angle);
     }
 
     public List<Angle> innerAngle()
     {
-        List<Double> edges = edgeLengths();
+        List<Double> edges = edgeLengthsInUnit();
         List<Angle> angles = new ArrayList<>();
 
         double a, b, c;
         Angle A, B, C;
 
-        a = edges.get(0) / Const.RADIUS;
-        b = edges.get(1) / Const.RADIUS;
-        c = edges.get(2) / Const.RADIUS;
+        a = edges.get(0);
+        b = edges.get(1);
+        c = edges.get(2);
 
         A = computeAngleA(a, b, c);
         B = computeAngleA(b, a, c);

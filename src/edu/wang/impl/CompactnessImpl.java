@@ -52,7 +52,7 @@ public class CompactnessImpl
             perimeter.add(perimeterPlSp);
             areaPlSp = new ArrayList<>(2);
             areaPlSp.add(Area.planeTriangleArea(instance.getFacets()[i]));
-            areaPlSp.add(Area.unitSphereSurfaceTriangleArea(a, b, c)*Math.pow(Const.RADIUS,2));
+            areaPlSp.add(Area.unitSphereTriangleArea(a, b, c)*Math.pow(Const.RADIUS,2));
             area.add(areaPlSp);
 
             delta = Math.abs(areaPlSp.get(1) - baseSphericalFacetArea);

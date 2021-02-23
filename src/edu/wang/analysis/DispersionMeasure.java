@@ -69,9 +69,9 @@ public class DispersionMeasure
         SphereStatisticsPoint statistics = new SphereStatisticsPoint(points);
 
         IO.write(polyhedron + "Dispersion", "point" + level, "Dispersion " + statistics.getDispersion());
-        IO.write(polyhedron + "Dispersion", "point" + level, "DispersionUnit " + statistics.getDispersionUnit());
+        IO.write(polyhedron + "Dispersion", "point" + level, "DispersionUnit " + statistics.getDispersionInUnit());
 //        IO.write(polyhedron + "Dispersion", "point" + level,
-//            "1/DispersionUnit " + (1.0 / statistics.getDispersionUnit()));
+//            "1/DispersionUnit " + (1.0 / statistics.getDispersionInUnit()));
         IO.write(polyhedron + "Dispersion", "point" + level, "Resultant " + statistics.getResultant());
         IO.write(polyhedron + "Dispersion", "point" + level, "MassCenter " + statistics.getMassCenter());
         IO.write(polyhedron + "Dispersion", "point" + level, "SphericalMean " + statistics.getSphericalMean());

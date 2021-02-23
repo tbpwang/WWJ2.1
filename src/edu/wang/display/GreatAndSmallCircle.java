@@ -9,9 +9,11 @@ package edu.wang.display;
 import edu.wang.io.Const;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.layers.RenderableLayer;
-import gov.nasa.worldwind.render.Path;
+import gov.nasa.worldwind.layers.*;
+import gov.nasa.worldwind.render.*;
+import gov.nasa.worldwind.render.Polygon;
 import gov.nasa.worldwindx.examples.ApplicationTemplate;
+import javafx.geometry.Pos;
 
 import java.awt.*;
 import java.util.List;
@@ -33,40 +35,47 @@ public class GreatAndSmallCircle extends ApplicationTemplate
     {
         public TestAPP()
         {
-            Position p1 = Position.fromDegrees(10, 0);
-            Position p2 = Position.fromDegrees(10, 70);
-            Position p3 = Position.fromDegrees(70, 0);
-            Position p4 = Position.fromDegrees(70, 70);
-            Position p5 = Position.fromDegrees(45, 0);
-            Position p6 = Position.fromDegrees(45, 70);
-            Position p7 = Position.fromDegrees(-30, 0);
-            Position p8 = Position.fromDegrees(-30, 70);
-
             List<RenderableLayer> layers = new ArrayList<>();
-            layers.add(setLayer(new Path(p1, p2), AVKey.GREAT_CIRCLE, "p1p2GC"));
-            layers.add(setLayer(new Path(p1, p2), AVKey.RHUMB_LINE, "p1p2RL"));
-            layers.add(setLayer(new Path(p1, p2), AVKey.LINEAR, "p1p2L"));
-            layers.add(setLayer(new Path(p3, p4), AVKey.GREAT_CIRCLE, "p3p4GC"));
-            layers.add(setLayer(new Path(p3, p4), AVKey.RHUMB_LINE, "p3p4RL"));
-            layers.add(setLayer(new Path(p3, p4), AVKey.LINEAR, "p3p4L"));
-            layers.add(setLayer(new Path(p5, p6), AVKey.GREAT_CIRCLE, "p5p6GC"));
-            layers.add(setLayer(new Path(p5, p6), AVKey.RHUMB_LINE, "p5p6RL"));
-            layers.add(setLayer(new Path(p5, p6), AVKey.LINEAR, "p5p6L"));
-            layers.add(setLayer(new Path(p1, p4), AVKey.GREAT_CIRCLE, "p1p4GC"));
-            layers.add(setLayer(new Path(p1, p4), AVKey.RHUMB_LINE, "p1p4RL"));
-            layers.add(setLayer(new Path(p1, p4), AVKey.LINEAR, "p1p4L"));
-            layers.add(setLayer(new Path(p1, p8), AVKey.GREAT_CIRCLE, "p1p8GC"));
-            layers.add(setLayer(new Path(p1, p8), AVKey.RHUMB_LINE, "p1p8RL"));
-            layers.add(setLayer(new Path(p1, p8), AVKey.LINEAR, "p1p8L"));
-            layers.add(setLayer(new Path(p7, p8), AVKey.GREAT_CIRCLE, "p7p8RL"));
-            layers.add(setLayer(new Path(p7, p8), AVKey.RHUMB_LINE, "p7p8RL"));
-            layers.add(setLayer(new Path(p7, p8), AVKey.LINEAR, "p7p8L"));
+            Position p1 = Position.fromDegrees(48.59, -180);
+            Position p2 = Position.fromDegrees(48.59, 0);
+            Position p3 = Position.fromDegrees(48.59, 180);
+            List<Position> positions = new ArrayList<>();
+            positions.add(p1);
+            positions.add(p2);
+            positions.add(p3);
 
-            for (RenderableLayer layer :
+
+            SurfacePolygon polygon = new SurfacePolygon();
+            polygon.setLocations(positions);
+//            polygon.setAttributes(Const.defaultPolygonAttribute(0.8, Color.white));
+//            polygon.setAttributes(Const.defaultPolygonAttribute(0.5, new Color(0,0,177)));
+            polygon.setAttributes(Const.defaultPolygonAttribute(0.7));
+//            polygon.setAttributes(Const.defaultPolygonAttribute(1, Color.darkGray));
+            polygon.setOuterBoundary(positions);
+            RenderableLayer layer = new RenderableLayer();
+            layer.addRenderable(polygon);
+            layers.add(layer);
+
+            Position top = Position.fromDegrees(90, 140);
+            Position left = Position.fromDegrees(0, 140);
+            Position right = Position.fromDegrees(0, -130);
+            List<Position> triangleEdges = new ArrayList<>();
+            triangleEdges.add(top);
+            triangleEdges.add(left);
+            triangleEdges.add(right);
+            SurfacePolygon triangle = new SurfacePolygon();
+            triangle.setLocations(triangleEdges);
+            triangle.setAttributes(Const.defaultPolygonAttribute(0.5));
+            RenderableLayer layer1 = new RenderableLayer();
+            layer1.addRenderable(triangle);
+            layers.add(layer1);
+//
+            for (RenderableLayer lyr :
                 layers)
             {
-                insertBeforeCompass(getWwd(), layer);
+                insertBeforeCompass(getWwd(), lyr);
             }
+            insertBeforeCompass(getWwd(),new LatLonGraticuleLayer());
         }
 
         private static RenderableLayer setLayer(Path path, String type, String name)
@@ -79,7 +88,7 @@ public class GreatAndSmallCircle extends ApplicationTemplate
             }
             else if (type == AVKey.LINEAR)
             {
-                path.setAttributes(Const.defaultPathAttribute(new Color(0,0,180)));
+                path.setAttributes(Const.defaultPathAttribute(new Color(0, 0, 180)));
             }
             else
             {

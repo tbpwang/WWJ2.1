@@ -118,11 +118,11 @@ public class PointsToTriangles
         for (int i = 1; i <= 1; i++)
         {
             //fileName = fileName + i + ".txt";
-            List<Vec4> vertices = IO.parsePointsToVec(folder + fileName + i + ".txt");
-            PointsToTriangles pointsToTriangles = new PointsToTriangles(vertices, i);
+           // List<Vec4> vertices = IO.readVec4Txt(folder + fileName + i + ".txt");
+            //PointsToTriangles pointsToTriangles = new PointsToTriangles(vertices, i);
             // rowColList = pointsToTriangles.getRowColumnList();
 
-            String distances = pointsToTriangles.pointToPointDistance();
+            //String distances = pointsToTriangles.pointToPointDistance();
 
             // IO.write("SQT", "distance_" + i, distances);
         }

@@ -10,7 +10,7 @@ import edu.wang.io.*;
 import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.util.Logging;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Zheng WANG
@@ -59,7 +59,8 @@ public class SphereStatisticsPoint
             Logging.logger().severe(message);
             throw new IllegalArgumentException(message);
         }
-        this.points = points;
+        this.points = new ArrayList<>();
+        this.points.addAll(points);
         this.size = points.size();
         this.dispersionFlag = false;
     }
@@ -136,10 +137,10 @@ public class SphereStatisticsPoint
 
     public double getDispersion()
     {
-        return Const.getGlobe().getRadius() * getDispersionUnit();
+        return Const.RADIUS * getDispersionInUnit();
     }
 
-    public double getDispersionUnit()
+    public double getDispersionInUnit()
     {
         setDispersion();
         return this.dispersion;

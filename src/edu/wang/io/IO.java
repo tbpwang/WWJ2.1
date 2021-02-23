@@ -8,6 +8,7 @@ package edu.wang.io;
 
 import edu.wang.*;
 import gov.nasa.worldwind.geom.*;
+import gov.nasa.worldwind.geom.coords.PolarCoordConverter;
 import gov.nasa.worldwind.util.Logging;
 
 import java.io.*;
@@ -22,7 +23,7 @@ import java.util.*;
  */
 public class IO
 {
-//    private static final int PRECISION = 6;
+    //    private static final int PRECISION = 6;
     private static boolean checkPath(String filePath)
     {
         File file = new File(filePath);
@@ -45,7 +46,22 @@ public class IO
         }
 
         FileWriter rt;
-        String pathFileName = path + title + ".txt";
+        char[] tempChar = title.toCharArray();
+        int tempSize = tempChar.length;
+        StringBuilder endWith = new StringBuilder();
+        for (int i = tempSize - 4; i < tempSize; i++)
+        {
+            endWith.append(tempChar[i]);
+        }
+        String pathFileName;
+        if (endWith.toString().equals(".txt"))
+        {
+            pathFileName = path + title;
+        }
+        else
+        {
+            pathFileName = path + title + ".txt";
+        }
         // String outContent = "   " + content;
         try
         {
@@ -105,7 +121,6 @@ public class IO
             }
     }
 
-
     public static String formatDouble(double doubleValue, int precision)
     {
         if (Double.isNaN(doubleValue))
@@ -140,29 +155,45 @@ public class IO
 //        return new DecimalFormat(pattern).format(number);
     }
 
-    public static List<Vec4> parsePointsToVec(String fileName)
+    public static List<Vec4> parseVec4(String[] xyz)
+    {
+        List<Vec4> points = new ArrayList<>();
+        for (int i = 0; i < xyz.length; i = i + 3)
+        {
+            points.add(
+                new Vec4(Double.parseDouble(xyz[i]), Double.parseDouble(xyz[i + 1]),
+                    Double.parseDouble(xyz[i + 2])));
+        }
+        return points;
+    }
+
+    public static String[] readVec4TxtLineWithID(String fileName, int lineNumber)
     {
         // 读取txt文档，该文档中存储了Vec4的点，
-        // 每行一个点，格式为 x y z
+        // 每行一个cell，code保留
+        // 每个cell的顶点用Vec4表示，顶点格式为 x\ty\tz\t
         File file = new File(fileName);
         BufferedReader reader = null;
-        //StringBuffer stringBuffer = new StringBuffer();
-        List<Vec4> parseVec = new ArrayList<>();
+        String[] lineVec4WithID = null;
         try
         {
             reader = new BufferedReader(new FileReader(file));
-            String tempStr;
-            while ((tempStr = reader.readLine()) != null)
+            String tempStr = "";
+            int lines = 0;
+            while (tempStr != null)
             {
-                //stringBuffer.append(tempStr);
-                String[] str = tempStr.split("\t");
-                parseVec.add(
-                    new Vec4(Double.parseDouble(str[0]), Double.parseDouble(str[1]), Double.parseDouble(str[2])));
-                //System.out.println(vec4);
+                tempStr = reader.readLine();
+
+                if (lines == lineNumber)
+                {
+                    lineVec4WithID = tempStr.split("\t");
+                    break;
+                }
+                lines++;
             }
             reader.close();
-//            return stringBuffer.toString();
-            return parseVec;
+
+//             return lineVec4WithID;
         }
         catch (IOException e)
         {
@@ -182,7 +213,61 @@ public class IO
                 }
             }
         }
-        return parseVec;
+        return lineVec4WithID;
+    }
+
+    public static List<List<Vec4>> readVec4Txt(String fileName)
+    {
+        return null;
+////        int maxNumber = Integer.MAX_VALUE;
+////        List<List<Vec4>> rows = new ArrayList<>();
+////        for (int i = 0; i < maxNumber; i++)
+////        {
+////            rows.add(readVec4Txt(fileName, i));
+////        }
+////        return rows;
+////        // 读取txt文档，该文档中存储了Vec4的点，
+////        // 格式为 x y z
+////        File file = new File(fileName);
+////        BufferedReader reader = null;
+////        //StringBuffer stringBuffer = new StringBuffer();
+////        List<Vec4> parseVec = new ArrayList<>();
+////        try
+////        {
+////            reader = new BufferedReader(new FileReader(file));
+////            String tempStr;
+////            while ((tempStr = reader.readLine()) != null)
+////            {
+////                //stringBuffer.append(tempStr);
+////                String[] str = tempStr.split("\t");
+////
+////                parseVec.add(
+////                    new Vec4(Double.parseDouble(str[0]), Double.parseDouble(str[1]), Double.parseDouble(str[2])));
+////                //System.out.println(vec4);
+////            }
+////            reader.close();
+//////            return stringBuffer.toString();
+////            return parseVec;
+////        }
+////        catch (IOException e)
+////        {
+////            e.printStackTrace();
+////        }
+////        finally
+////        {
+////            if (reader != null)
+////            {
+////                try
+////                {
+////                    reader.close();
+////                }
+////                catch (IOException e1)
+////                {
+////                    e1.printStackTrace();
+////                }
+////            }
+////        }
+////        return parseVec;
     }
 
     public static double check(double doubleValue, int precision)
@@ -238,17 +323,28 @@ public class IO
 
     public static LatLon vec4ToLatLon(Vec4 vec4)
     {
-        double phi = Math.asin(vec4.getY());
-        double lambda = Math.atan2(vec4.getX(), vec4.getZ());
+//        double phi = Math.asin(vec4.getY());
+//        double lambda = Math.atan2(vec4.getX(), vec4.getZ());
+//
+//        return LatLon.fromRadians(phi, lambda);
 
-        return LatLon.fromRadians(phi, lambda);
+        PolarPoint point = PolarPoint.fromCartesian(vec4);
+        return new LatLon(point.getLatitude(), point.getLongitude());
+    }
+
+    public static Vec4 positionToVec4(Position position)
+    {
+        double radius = position.getElevation() + Const.RADIUS;
+        PolarPoint point = new PolarPoint(position.latitude, position.longitude, radius);
+        return point.toCartesian();
     }
 
     public static Vec4 latLonToVec4(LatLon latLon)
     {
-        // 在单位圆上转换
-        PolarPoint point = PolarPoint.fromDegrees(latLon.getLatitude().degrees, latLon.getLongitude().degrees, 1.0);
-        return check(point.toCartesian());
+        // 在单位圆上转换,radius = 1.0;
+        PolarPoint point = new PolarPoint(latLon.getLatitude(), latLon.getLongitude(), 1.0);
+
+        return point.toCartesian();
 
 //        double x, y, z;
 //        double phi = latLon.getLatitude().radians;
@@ -279,21 +375,21 @@ public class IO
     {
         // 球面平均位置
         Vec4 resultant = resultant(points);
-        double resultantLength = resultant.getLength3();
+        double length = resultant.getLength3();
 //        double x, y, z;
 //        x = resultant.getX() / resultantLength;
 //        y = resultant.getY() / resultantLength;
 //        z = resultant.getZ() / resultantLength;
-        return check(resultant.getX() / resultantLength, resultant.getY() / resultantLength,
-            resultant.getZ() / resultantLength);
+        return check(resultant.getX() / length, resultant.getY() / length,
+            resultant.getZ() / length);
     }
 
     public static Vec4 massCenter(List<LatLon> points)
     {
         // 质心
-        double resultantLength = resultant(points).getLength3();
+        double length = resultant(points).getLength3();
         int pointNumber = points.size() == 0 ? 1 : points.size();
-        double r = resultantLength / pointNumber;
+        double r = length / pointNumber;
         Vec4 mean = sphericalMean(points);
         return check(r * mean.getX(), r * mean.getY(), r * mean.getZ());
     }
@@ -328,6 +424,7 @@ public class IO
         }
         return diff1;
     }
+
     public static double asInt(double adouble)
     {
         double aint = Math.rint(adouble);
@@ -341,6 +438,7 @@ public class IO
             return adouble;
         }
     }
+
     public static LatLon check(LatLon latLon)
     {
         if (latLon == null)
@@ -349,4 +447,5 @@ public class IO
         double lon = asInt(latLon.getLongitude().getRadians());
         return LatLon.fromRadians(lat, lon);
     }
+
 }

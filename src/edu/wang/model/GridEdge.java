@@ -11,19 +11,19 @@ import gov.nasa.worldwind.geom.*;
 
 public class GridEdge
 {
-    private GridPoint first, last;
+    private CellVertex first, last;
     private boolean flag;
 
     public GridEdge(LatLon first, LatLon last)
     {
-        this.first = new GridPoint(IO.check(first));
-        this.last = new GridPoint(IO.check(last));
+        this.first = new CellVertex(IO.check(first));
+        this.last = new CellVertex(IO.check(last));
         flag = false;
     }
     public GridEdge(Vec4 first, Vec4 last)
     {
-        this.first = new GridPoint(IO.check(first));
-        this.last = new GridPoint(IO.check(last));
+        this.first = new CellVertex(IO.check(first));
+        this.last = new CellVertex(IO.check(last));
         flag = false;
     }
 
@@ -37,12 +37,12 @@ public class GridEdge
         this.flag = flag;
     }
 
-    public GridPoint getFirst()
+    public CellVertex getFirst()
     {
         return first;
     }
 
-    public GridPoint getLast()
+    public CellVertex getLast()
     {
         return last;
     }

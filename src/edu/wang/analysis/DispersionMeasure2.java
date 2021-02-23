@@ -51,7 +51,7 @@ public class DispersionMeasure2
 //                temp.add(Constant.vec4ToLatLon(t.getB()));
 //                temp.add(Constant.vec4ToLatLon(t.getC()));
                 statistics = new SphereStatisticsPoint(vec4List);
-                dispersion.add(statistics.getDispersionUnit());
+                dispersion.add(statistics.getDispersionInUnit());
 //                System.out.println("MassCenter"+ Constant.vec4ToLatLon(statistics.getMassCenter()));
 //                System.out.println("Center "+ LatLon.getCenter(temp));
             }

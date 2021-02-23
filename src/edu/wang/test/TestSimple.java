@@ -156,7 +156,7 @@ public class TestSimple
 //        System.out.println("Azimuth1-2 = " + an2);
 //        System.out.println("2-3: " + LatLon.greatCircleAzimuth(tp2, tp3));
 //        System.out.println("1-3: " + LatLon.greatCircleAzimuth(tp1, tp3));
-//        System.out.println("Area: " + triangle1.getUnitArea());
+//        System.out.println("Area: " + triangle1.calculateCellArea());
 //        System.out.println();
 //        LatLon insert1 = LatLon.greatCircleEndPosition(tp1, 0.6, 0.5 * Const.radius);
 //        LatLon insert2 = LatLon.rhumbEndPosition(tp1, 0.6, 0.5 * Const.radius);
@@ -183,7 +183,7 @@ public class TestSimple
 //            v1 = tri.getA();
 //            v2 = tri.getB();
 //            v3 = tri.getC();
-//            planeAreas.add(Area.planeTriangleArea(v1, v2, v3));
+//            planeAreas.add(Area.normalizePlaneTriangleArea(v1, v2, v3));
 //            planeEdges.add(Perimeter.triangleEdges(v1, v2, v3));
 //            LatLon p1, p2, p3;
 //            p1 = Const.vec4ToLatLon(v1);
@@ -341,8 +341,8 @@ public class TestSimple
 //        LatLon z = Constant.vec4ToLatLon(vz);
 //        // surface(cell) area
 //        SurfaceTriangle surfaceTriangle = new SurfaceTriangle(y,z,x,"");
-//        System.out.println("SurfacetriangleUnit = " + surfaceTriangle.getUnitArea());
-//        System.out.println("Surfacetriangle = " + surfaceTriangle.getUnitArea()*Constant.radius);
+//        System.out.println("SurfacetriangleUnit = " + surfaceTriangle.calculateCellArea());
+//        System.out.println("Surfacetriangle = " + surfaceTriangle.calculateCellArea()*Constant.radius);
 //        System.out.println("=================");
 //        System.out.println("x " + x);
 //        System.out.println("y " + y);
@@ -378,10 +378,10 @@ public class TestSimple
 //        LatLon right = LatLon.fromDegrees(lat, 30.01);
 //        ZhaoSurfaceTriangle trianglez = new ZhaoSurfaceTriangle(top, left, right, new Geocode());
 //        SurfaceTriangle tri = new SurfaceTriangle(top, left, right, "");
-//        System.out.println("Unit " + tri.getUnitArea());
+//        System.out.println("Unit " + tri.calculateCellArea());
 //
 //        double radius = Constant.getGlobe().radius();
-//        System.out.println("Area " + tri.getUnitArea() * radius * radius);
+//        System.out.println("Area " + tri.calculateCellArea() * radius * radius);
 ////
 //        double s, s0;
 //        double radLat = lat * Math.PI / 180.0;
