@@ -25,7 +25,7 @@ public class EssentialVariable
 {
     public static void main(String[] args)
     {
-        int maxLevel = 9;
+        int maxLevel = 8;
 
         // basic data
         int basicShape = 3;
@@ -104,7 +104,7 @@ public class EssentialVariable
                 area = triangle.getUnitArea() * Math.pow(Const.RADIUS, 2);
                 cellContents.append(IO.formatDouble(area, 14)).append("\t\t");
                 //column 3
-                planeArea = Area.planeTriangleArea(triangle.getTop(),triangle.getLeft(),triangle.getRight());
+                planeArea = Area.planeTriangleArea(triangle.getTop(), triangle.getLeft(), triangle.getRight());
                 cellContents.append(IO.formatDouble(planeArea, 14)).append("\t\t");
 
                 // 内角 column 4
@@ -125,9 +125,9 @@ public class EssentialVariable
                 cellContents.append(IO.formatDouble(edge3)).append("\t\t");
                 //cellContents.append(IO.formatDouble(perimeter)).append("\t");
                 // column 6
-                pla = Length.calculateLineLength(triangle.getLeft(),triangle.getRight());
-                plb = Length.calculateLineLength(triangle.getTop(),triangle.getRight());
-                plc = Length.calculateLineLength(triangle.getLeft(),triangle.getTop());
+                pla = Length.calculateLineLength(triangle.getLeft(), triangle.getRight());
+                plb = Length.calculateLineLength(triangle.getTop(), triangle.getRight());
+                plc = Length.calculateLineLength(triangle.getLeft(), triangle.getTop());
                 cellContents.append(IO.formatDouble(pla)).append("\t");
                 cellContents.append(IO.formatDouble(plb)).append("\t");
                 cellContents.append(IO.formatDouble(plc)).append("\t\t");
@@ -141,7 +141,8 @@ public class EssentialVariable
                 shapeIndex = basicShape * Math.sqrt(area) / perimeter;
 //                cellContents.append("L5\t").append(IO.formatDouble(shapeIndex)).append(System.lineSeparator());
                 cellContents.append(IO.formatDouble(shapeIndex)).append("\t\t");
-                dimension = 2 * Math.log(perimeter / 4.0) / Math.log(area);
+//                dimension = 2 * Math.log(perimeter / 4.0) / Math.log(area);
+                dimension = 2 * Math.log(perimeter) / Math.log(area);
 //                cellContents.append("L6\t").append(IO.formatDouble(dimension)).append(System.lineSeparator());
                 cellContents.append(IO.formatDouble(dimension)).append("\t\t");
 
@@ -179,8 +180,7 @@ public class EssentialVariable
                         nearEdgeDistances.add(
                             LatLon.greatCircleDistance(triangleCenter, nearCenter).radians * Const.RADIUS);
                         LatLon cellsCenter = LatLon.interpolateGreatCircle(0.5, triangleCenter, nearCenter);
-                        double distance0 = LatLon.greatCircleDistance(edgeCenters.get(0), cellsCenter).radians
-                            * Const.RADIUS;
+                        double distance0 = LatLon.greatCircleDistance(edgeCenters.get(0), cellsCenter).radians;
                         double distance1 = LatLon.greatCircleDistance(edgeCenters.get(1), cellsCenter).degrees;
                         double distance2 = LatLon.greatCircleDistance(edgeCenters.get(2), cellsCenter).degrees;
                         twoLineCenterDistances.add(Math.min(Math.min(distance0, distance1), distance2));

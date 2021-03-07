@@ -25,7 +25,7 @@ public class QTMVariableAnalysis
 {
     public static void main(String[] args)
     {
-        int maxLevel = 9;
+        int maxLevel = 10;
 
         // basic data
         int basicShape = 3;
@@ -74,7 +74,7 @@ public class QTMVariableAnalysis
 
         // calculation by metadata
         String fileName;
-        for (int level = 1; level < maxLevel; level++)
+        for (int level = 9; level < maxLevel; level++)
         {
 //            System.out.println("ForiLevel\t=\t" + level);
             System.gc();
@@ -155,8 +155,8 @@ public class QTMVariableAnalysis
                 shapeIndex = basicShape * Math.sqrt(area) / perimeter;
 //                cellContents.append("L5\t").append(IO.formatDouble(shapeIndex)).append(System.lineSeparator());
                 cellContents.append(IO.formatDouble(shapeIndex)).append("\t\t");
-                dimension = 2 * Math.log(perimeter) / Math.log(area);
 //                dimension = 2 * Math.log(perimeter / 4.0) / Math.log(area);
+                dimension = 2 * Math.log(perimeter) / Math.log(area);
 //                cellContents.append("L6\t").append(IO.formatDouble(dimension)).append(System.lineSeparator());
                 cellContents.append(IO.formatDouble(dimension)).append("\t\t");
 
@@ -197,8 +197,10 @@ public class QTMVariableAnalysis
                         LatLon cellsCenter = LatLon.interpolateGreatCircle(0.5, triangleCenter, nearCenter);
                         double distance0 = LatLon.greatCircleDistance(edgeCenters.get(0), cellsCenter).radians
                             * Const.RADIUS;
-                        double distance1 = LatLon.greatCircleDistance(edgeCenters.get(1), cellsCenter).degrees;
-                        double distance2 = LatLon.greatCircleDistance(edgeCenters.get(2), cellsCenter).degrees;
+                        double distance1 = LatLon.greatCircleDistance(edgeCenters.get(1), cellsCenter).degrees
+                            * Const.RADIUS;
+                        double distance2 = LatLon.greatCircleDistance(edgeCenters.get(2), cellsCenter).degrees
+                            * Const.RADIUS;
                         twoLineCenterDistances.add(Math.min(Math.min(distance0, distance1), distance2));
                     }
                     else if (aNber.getType() == Const.NEIGHBOR_TYPE_VERTEX)

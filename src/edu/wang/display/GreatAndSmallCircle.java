@@ -23,6 +23,7 @@ import java.util.*;
  * @author Zheng WANG
  * @create 2019/11/4
  * @description 图形显示大圆弧和小圆弧的差异
+ *  等同于正八面体的一个面面积，latitude = 48.59
  */
 public class GreatAndSmallCircle extends ApplicationTemplate
 {
@@ -36,9 +37,10 @@ public class GreatAndSmallCircle extends ApplicationTemplate
         public TestAPP()
         {
             List<RenderableLayer> layers = new ArrayList<>();
-            Position p1 = Position.fromDegrees(48.59, -180);
-            Position p2 = Position.fromDegrees(48.59, 0);
-            Position p3 = Position.fromDegrees(48.59, 180);
+
+            Position p1 = Position.fromDegrees(1, -180);
+            Position p2 = Position.fromDegrees(1, 0);
+            Position p3 = Position.fromDegrees(1, 180);
             List<Position> positions = new ArrayList<>();
             positions.add(p1);
             positions.add(p2);

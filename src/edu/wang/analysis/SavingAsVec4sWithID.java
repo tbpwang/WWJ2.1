@@ -17,8 +17,9 @@ import java.util.*;
  * @Author: Joel Wang
  * @Time: 2021/2/22 20:17
  * @Param: 把第8层等剖分层单元格写到文本，待以后每次读取重新剖分
+ * QTMTriangleSubdivisionAndSavingAsVec4s
  */
-public class QTMTriangleSubdivisionAndSavingAsVec4s
+public class SavingAsVec4sWithID
 {
     private static QTMTriangle initQTMTriangle()
     {
@@ -43,11 +44,11 @@ public class QTMTriangleSubdivisionAndSavingAsVec4s
         String folder = prefix + "level" + level + "_" + dateFormat.format(date);
         String pointName = "vec4Vertices";
         QTMTriangle triangle = initQTMTriangle();
-        List<QTMTriangle> triangleList = getQTMTriangels(level, triangle);
+        List<QTMTriangle> triangleList = refineQTMTriangels(level, triangle);
         saveAS(triangleList, folder, pointName);
     }
 
-    public static List<QTMTriangle> getQTMTriangels(int level, QTMTriangle triangle)
+    public static List<QTMTriangle> refineQTMTriangels(int level, QTMTriangle triangle)
     {
         List<QTMTriangle> triangleList = new ArrayList<>();
         triangleList.add(triangle);

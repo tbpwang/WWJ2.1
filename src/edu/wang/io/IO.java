@@ -37,7 +37,11 @@ public class IO
 
     public static void write(String folderName, String title, String content)
     {
-        String path = "D:\\outData\\" + folderName + "\\";
+        String path;
+        if (folderName.charAt(1) == ':')
+            path = folderName + "\\";
+        else
+            path = "D:\\outData\\" + folderName + "\\";
         if (!checkPath(path))
         {
             String message = Logging.getMessage("FileError.创建文件夹出错");
@@ -167,7 +171,7 @@ public class IO
         return points;
     }
 
-    public static String[] readVec4TxtLineWithID(String fileName, int lineNumber)
+    public static String[] readVec4TxtWithIDLineByNo(String fileName, int lineNumber)
     {
         // 读取txt文档，该文档中存储了Vec4的点，
         // 每行一个cell，code保留
@@ -447,5 +451,4 @@ public class IO
         double lon = asInt(latLon.getLongitude().getRadians());
         return LatLon.fromRadians(lat, lon);
     }
-
 }

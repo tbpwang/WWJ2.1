@@ -27,6 +27,7 @@ public class Test
         LatLon p0 = LatLon.fromDegrees(90, 0);
         LatLon p1 = LatLon.fromDegrees(20, 0);
         LatLon p2 = LatLon.fromDegrees(20, 90);
+
         List<Position> boundary = new ArrayList<>();
         Position pos0, pos1, pos2;
         pos0 = new Position(p0, 0);
@@ -34,17 +35,25 @@ public class Test
         pos2 = new Position(p2, 0);
         SurfaceTriangle triangle = new SurfaceTriangle(p0,p1,p2,"abc");
         //IO.write("test","abc",triangle.coordinatesVec4WithID());
+        System.out.println("Center\t" + IO.latLonToVec4(triangle.getCenter()));
+        System.out.println("Center\t" + IO.latLonToVec4(triangle.getCenter()).normalize3());
+        Vec4 v1,v2,v3;
+        v1 = IO.latLonToVec4(p0);
+        v2 = IO.latLonToVec4(p1);
+        v3 = IO.latLonToVec4(p2);
+        Vec4 v123 = new Vec4((v1.getX()+v2.getX()+v3.getX())/3,(v1.getY()+v2.getY()+v3.getY())/3,(v1.getZ()+v2.getZ()+v3.getZ())/3);
+        System.out.println("V123\t" + v123.normalize3().multiply3(Const.RADIUS));
 
-        String filePath = "D:\\outData\\QTMlevel8\\vec4Vertices.txt";
-        for (int i = 0; i < 4; i++)
-        {
-            String[] temp = IO.readVec4TxtLineWithID(filePath,i);
-            System.out.println("" + temp[0]+"\t");
-            for (int j = 1; j < temp.length; j=j+3)
-            {
-                System.out.println(""+temp[j]+"\t"+temp[j+1]+"\t"+temp[j+2]);
-            }
-        }
+//        String filePath = "D:\\outData\\QTMlevel8\\vec4Vertices.txt";
+//        for (int i = 0; i < 4; i++)
+//        {
+//            String[] temp = IO.readVec4TxtWithIDLineByNo(filePath,i);
+//            System.out.println("" + temp[0]+"\t");
+//            for (int j = 1; j < temp.length; j=j+3)
+//            {
+//                System.out.println(""+temp[j]+"\t"+temp[j+1]+"\t"+temp[j+2]);
+//            }
+//        }
 
 //        Angle bottom = p1.latitude;
 //        double detaLon = p2.longitude.subtract(p1.longitude).radians;
