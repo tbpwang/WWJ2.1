@@ -13,7 +13,9 @@ import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.render.Path;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 //import org.jetbrains.annotations.NotNull;
 
@@ -276,13 +278,17 @@ public class QTMTriangle extends SurfaceTriangle
         path1.setAltitudeMode(WorldWind.RELATIVE_TO_GROUND);
         path1.setFollowTerrain(true);
         path1.setPathType(AVKey.GREAT_CIRCLE);
-        path1.setAttributes(Const.defaultPathAttribute());
+
+//        Color color = new Color(108,165,217);
+//        Color color = new Color(244,177,131);
+        Color color = Color.white;
+        path1.setAttributes(Const.defaultPathAttribute(color));
 
         path2 = new Path(new Position(getLeft(), 0), new Position(getRight(), 0));
         path2.setAltitudeMode(WorldWind.RELATIVE_TO_GROUND);
         path2.setFollowTerrain(true);
         path2.setPathType(AVKey.RHUMB_LINE);
-        path2.setAttributes(Const.defaultPathAttribute());
+        path2.setAttributes(Const.defaultPathAttribute(color));
 
         return new Path[] {path1, path2};
     }

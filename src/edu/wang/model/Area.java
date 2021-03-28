@@ -70,6 +70,8 @@ public class Area
 
     private static double calculateTriangleAreaBySides(String sideType, double aSide, double bSide, double cSide)
     {
+        // 根据吕利耶 (Lhuilier) 定理
+        //
         //sideType = AVKey.LINEAR  OR  AVKey.GREAT_CIRCLE
         double p = (aSide + bSide + cSide) / 2.0;
         double s = -1.0;
@@ -141,7 +143,7 @@ public class Area
             Logging.logger().severe(msg);
             throw new IllegalArgumentException(msg);
         }
-        double p, la, lb, lc;
+        double la, lb, lc;
 //        Length.calculateArcLength(AVKey.GREAT_CIRCLE,)
 //        la = LatLon.greatCircleDistance(left, right).radians * Const.RADIUS;
 //        lb = LatLon.greatCircleDistance(top, right).radians * Const.RADIUS;
@@ -151,7 +153,7 @@ public class Area
         lc = Length.calculateArcLength(AVKey.GREAT_CIRCLE, top, left);
         if (la < 0 | lb < 0 | lc < 0)
             return 0.0;
-        p = (la + lb + lc) / 2.0;
+//        p = (la + lb + lc) / 2.0;
 //        double A = 2 * Math.asin(Math.sqrt(Math.sin(p - lc) * Math.sin(p - lb) / Math.sin(lc) / Math.sin(lb)));
 //        double B = 2 * Math.asin(Math.sqrt(Math.sin(p - lc) * Math.sin(p - la) / Math.sin(lc) / Math.sin(la)));
 //        double C = 2 * Math.asin(Math.sqrt(Math.sin(p - la) * Math.sin(p - lb) / Math.sin(la) / Math.sin(lb)));

@@ -47,7 +47,7 @@ public class ShowQTM extends ApplicationTemplate
             List<QTMTriangle> temp;
 
 
-            int level = 4;
+            int level = 1;
 
             for (int i = 0; i < level; i++)
             {

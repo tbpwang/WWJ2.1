@@ -20,49 +20,52 @@ import java.util.*;
  * @author Zheng WANG
  * @create 2019/12/27
  * @description gggad 面积、角度、边长、形状...,格点内蕴距离（大圆弧距离）、格元紧度、格元分形分维数、格元离散度
+ *
  */
 public class EssentialVariable
 {
     public static void main(String[] args)
     {
-        int maxLevel = 8;
+        int maxLevel = 7;
+
+        String version = "EssentialVariable,2019/12/27";
 
         // basic data
         int basicShape = 3;
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
-        String prefix = "SQT";
+        String prefix = "SQT";//SQT
         String folder = prefix + dateFormat.format(date);
         String pointName = "point";
 
         // metadata
-        String metadata = "\t" + prefix + ".txt" + "\t" + "basicShape = " + basicShape + System.lineSeparator()
-            + "Column1ID" + "\t" + "triangle.getGeocode().getID())" + System.lineSeparator()
-            + "Column2面积" + "\t" + "triangle.calculateCellArea() * Math.pow(Const.radius, 2)"
+        String metadata = version + "\t\t" + prefix + ".txt" + "\t" + "basicShape = " + basicShape + System.lineSeparator()
+            + "Column1\tID" + "\t" + "triangle.getGeocode().getID())" + System.lineSeparator()
+            + "Column2\t面积" + "\t" + "triangle.calculateCellArea() * Math.pow(Const.radius, 2)"
             + System.lineSeparator()
-            + "Column2.1面积" + "\t" + "Area.sphericalTriangleArea()" + System.lineSeparator()
-            + "Column2.2面积" + "\t" + "Area.normalizePlaneTriangleArea()" + System.lineSeparator()
-            + "Column3角度" + "\t" + "triangle.innerAngle().get(0).degrees" + System.lineSeparator()
-            + "Column4.1边长" + "\t" + "triangle.distance().get(i).radians * Const.radius;"
+            + "Column3\t面积" + "\t" + "Area.sphericalTriangleArea()" + System.lineSeparator()
+            + "Column4\t面积" + "\t" + "Area.normalizePlaneTriangleArea()" + System.lineSeparator()
+            + "Column5\t角度" + "\t" + "triangle.innerAngle().get(0).degrees" + System.lineSeparator()
+            + "Column6\t边长" + "\t" + "triangle.distance().get(i).radians * Const.radius;"
             + System.lineSeparator()
-            + "Column4.2边长" + "\t" + "planeDistance(i)" + System.lineSeparator()
+            + "Column7\t边长" + "\t" + "planeDistance(i)" + System.lineSeparator()
 //        metadata.append("(4)边长b").append("\t");
 //        metadata.append("(5)边长c").append("\t");
-            + "Column5紧度" + "\t"
+            + "Column8\t紧度" + "\t"
             + "4 * Math.PI * Math.pow(Const.radius, 2.0) * area - Math.pow(area, 2.0)) / Math.pow(Const.radius * perimeter, 2.0)"
             + System.lineSeparator()
-            + "Column6形状指数" + "\t" + "basicShape * Math.sqrt(area)/ perimeter;"
+            + "Column9\t形状指数" + "\t" + "basicShape * Math.sqrt(area)/ perimeter;"
             + System.lineSeparator()
-            + "Column7分维数" + "\t" + "2 * Math.log(perimeter / 4.0) / Math.log(area)"
+            + "Column10\t分维数" + "\t" + "2 * Math.log(perimeter) / Math.log(area)"
             + System.lineSeparator()
-            + "Column8离散度" + "\t" + System.lineSeparator()
+            + "Column11\t离散度" + "\t" + System.lineSeparator()
 //        metadata.append("(10)面积×离散度2").append("\t");
-            + "Column9twoCenter距离" + "\t" + "LatLon.greatCircleDistance(p1,p2).radians * Const.radius"
+            + "Column12\ttwoCenter距离" + "\t" + "LatLon.greatCircleDistance(p1,p2).radians * Const.radius"
             + System.lineSeparator()
             // Neighbor cell的邻接距离
-            + "Column10边邻接距离" + "\t" + "LatLon.greatCircleDistance(p1,p2).radians * Const.radius"
+            + "Column13\t边邻接距离" + "\t" + "LatLon.greatCircleDistance(p1,p2).radians * Const.radius"
             + System.lineSeparator()
-            + "Column11角邻接距离" + "\t" + "LatLon.greatCircleDistance(p1,p2).radians * Const.radius"
+            + "Column14\t角邻接距离" + "\t" + "LatLon.greatCircleDistance(p1,p2).radians * Const.radius"
             + System.lineSeparator()
 
             // pointName
@@ -98,21 +101,24 @@ public class EssentialVariable
                 double dispersion;//
 //                double areaMulDis2;//area*dispersion
 //                cellContents.append(triangle.getGeocode().getID()).append(System.lineSeparator());
-                // column 1
+                // column 1ID
                 cellContents.append(triangle.getGeocode().getID()).append("\t\t");
-                // column 2
+                // column 2 sphericalArea
                 area = triangle.getUnitArea() * Math.pow(Const.RADIUS, 2);
-                cellContents.append(IO.formatDouble(area, 14)).append("\t\t");
-                //column 3
+                cellContents.append(IO.formatDouble(area, Const.PRECISION)).append("\t\t");
+                //column 3 planeArea
                 planeArea = Area.planeTriangleArea(triangle.getTop(), triangle.getLeft(), triangle.getRight());
                 cellContents.append(IO.formatDouble(planeArea, 14)).append("\t\t");
 
-                // 内角 column 4
-                cellContents.append(IO.formatDouble(triangle.innerAngle().get(0).degrees, 14)).append("\t");
-                cellContents.append(IO.formatDouble(triangle.innerAngle().get(1).degrees, 14)).append("\t");
-                cellContents.append(IO.formatDouble(triangle.innerAngle().get(2).degrees, 14)).append("\t\t");
+                // 内角 column 4 innerAngle
+                cellContents.append(IO.formatDouble(triangle.innerAngle().get(0).degrees, Const.PRECISION)).append(
+                    "\t");
+                cellContents.append(IO.formatDouble(triangle.innerAngle().get(1).degrees, Const.PRECISION)).append(
+                    "\t");
+                cellContents.append(IO.formatDouble(triangle.innerAngle().get(2).degrees, Const.PRECISION)).append(
+                    "\t\t");
 
-                // column 5
+                // column 5 edgeLength
                 // 根据不同的剖分方法，使用不同的计算方法计算边长
                 edge1 = triangle.edgeLengths().get(0);
                 edge2 = triangle.edgeLengths().get(1);
@@ -124,7 +130,7 @@ public class EssentialVariable
 //                cellContents.append(edge3).append(System.lineSeparator());
                 cellContents.append(IO.formatDouble(edge3)).append("\t\t");
                 //cellContents.append(IO.formatDouble(perimeter)).append("\t");
-                // column 6
+                // column 6 lineLength
                 pla = Length.calculateLineLength(triangle.getLeft(), triangle.getRight());
                 plb = Length.calculateLineLength(triangle.getTop(), triangle.getRight());
                 plc = Length.calculateLineLength(triangle.getLeft(), triangle.getTop());
@@ -133,12 +139,12 @@ public class EssentialVariable
                 cellContents.append(IO.formatDouble(plc)).append("\t\t");
 
                 // column 7
-                compactness = (4 * Math.PI * Math.pow(Const.RADIUS, 2.0) * area - Math.pow(area, 2.0)) / Math.pow(
-                    Const.RADIUS * perimeter, 2.0);
+                compactness = Math.sqrt(4 * Math.PI * Math.pow(Const.RADIUS, 2.0) * area - Math.pow(area, 2.0)) / (
+                    Const.RADIUS * perimeter);
 //                cellContents.append("L4\t").append(IO.formatDouble(compactness)).append(System.lineSeparator());
                 cellContents.append(IO.formatDouble(compactness)).append("\t\t");
 //                shapeIndex = perimeter / shape / Math.sqrt(area);
-                shapeIndex = basicShape * Math.sqrt(area) / perimeter;
+                shapeIndex = 4.559 * Math.sqrt(area) / perimeter;
 //                cellContents.append("L5\t").append(IO.formatDouble(shapeIndex)).append(System.lineSeparator());
                 cellContents.append(IO.formatDouble(shapeIndex)).append("\t\t");
 //                dimension = 2 * Math.log(perimeter / 4.0) / Math.log(area);
@@ -151,7 +157,7 @@ public class EssentialVariable
                 vertices.add(IO.check(IO.latLonToVec4(triangle.getLeft())));
                 vertices.add(IO.check(IO.latLonToVec4(triangle.getRight())));
                 SphereStatisticsPoint sPoints = new SphereStatisticsPoint(vertices);
-                dispersion = sPoints.getDispersionInUnit();
+                dispersion = sPoints.getDispersionInUnit()*Const.RADIUS;
 //                cellContents.append("L7\t").append(IO.formatDouble(dispersion, 6)).append(System.lineSeparator());
                 cellContents.append(IO.formatDouble(dispersion)).append("\t\t");
 //                areaMulDis2 = area * Math.pow(dimension, 2.0);
@@ -168,7 +174,8 @@ public class EssentialVariable
 
                 edgeCenters.add(LatLon.interpolateGreatCircle(0.5, triangle.getTop(), triangle.getLeft()));
                 edgeCenters.add(LatLon.interpolateGreatCircle(0.5, triangle.getTop(), triangle.getRight()));
-                edgeCenters.add(LatLon.interpolateGreatCircle(0.5, triangle.getLeft(), triangle.getRight()));
+               edgeCenters.add(LatLon.interpolateGreatCircle(0.5, triangle.getLeft(), triangle.getRight()));
+                //edgeCenters.add(LatLon.interpolateRhumb(0.5, triangle.getLeft(), triangle.getRight()));
 
                 for (Mesh.Neighbor aNber :
                     neighborList)
@@ -183,7 +190,7 @@ public class EssentialVariable
                         double distance0 = LatLon.greatCircleDistance(edgeCenters.get(0), cellsCenter).radians;
                         double distance1 = LatLon.greatCircleDistance(edgeCenters.get(1), cellsCenter).degrees;
                         double distance2 = LatLon.greatCircleDistance(edgeCenters.get(2), cellsCenter).degrees;
-                        twoLineCenterDistances.add(Math.min(Math.min(distance0, distance1), distance2));
+                        twoLineCenterDistances.add(Math.min(Math.min(distance0, distance1), distance2) * Const.RADIUS);
                     }
                     else if (aNber.getType() == Const.NEIGHBOR_TYPE_VERTEX)
                     {

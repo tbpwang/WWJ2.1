@@ -6,9 +6,6 @@
 
 package edu.wang.analysis;
 
-import edu.wang.io.Const;
-import gov.nasa.worldwind.avlist.AVKey;
-
 /**
  * @Author: Joel Wang
  * @Time: 2021/2/3 12:47
@@ -20,7 +17,7 @@ public class SphereOrPlane
 {
     public static void main(String[] args)
     {
-
+        // todo：
     }
 
 }

@@ -17,7 +17,7 @@ import java.util.*;
 
 /**
  * @author Zheng WANG
- * @create 2020编辑
+ * @create 2020编辑 20210311
  * @description 生成QTM计算格网，用于相关性等数据分析
  */
 
@@ -25,45 +25,54 @@ public class QTMVariableAnalysis
 {
     public static void main(String[] args)
     {
-        int maxLevel = 10;
+        String version = "QTMVariableAnalysis";
+
+        int maxLevel = 9;
 
         // basic data
         int basicShape = 3;
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
-        String prefix = "QTM";
-//        String prefix = "SQT";
+//        String prefix = "QTM";
+        String prefix = "SQT";
         String folder = prefix + dateFormat.format(date);
         String pointName = "point";
 
+
+
         // metadata
-        String metadata = "\t" + prefix + ".txt\t" + "basicShape = " + basicShape + System.lineSeparator()
+        String metadata = version + "\t\t" + prefix + ".txt\t" + "basicShape = " + basicShape + System.lineSeparator()
             + "Column1ID\t" + "triangle.getGeocode().getID())" + System.lineSeparator()
 
             + "Column2Sphere面积" + "\t" + "triangle.calculateCellArea(true)" + System.lineSeparator()
-            + "Column2Plane面积" + "\t" + "Area.planeTriangleArea()" + System.lineSeparator()
+            + "Column3Plane面积" + "\t" + "Area.planeTriangleArea()" + System.lineSeparator()
 
-            + "Column3角度\t" + "triangle.innerAngle().get(i).degrees" + System.lineSeparator()
+            + "Column4角度(3)\t" + "triangle.innerAngle().get(i).degrees" + System.lineSeparator()
 
-            + "Column4.1边长" + "\t" + "triangle.edgeLengths().get(i)" + System.lineSeparator()
-            + "Column4.2边长" + "\t" + "Length.calculateLineLength()" + System.lineSeparator()
+            + "Column5边长(3)" + "\t" + "triangle.edgeLengths().get(i)" + System.lineSeparator()
+            + "Column6边长(3)" + "\t" + "Length.calculateLineLength()" + System.lineSeparator()
 
-            + "Column5紧度\t" + "sqrt()\t"
-            + "4 * Math.PI * Math.pow(Const.radius, 2.0) * area - Math.pow(area, 2.0)) / Math.pow(Const.radius * perimeter, 2.0)"
+            + "Column7紧度\t" + "sqrt()\t"
+            + "math.sqrt(4 * Math.PI * Math.pow(Const.radius, 2.0) * area - Math.pow(area, 2.0)) / (Const.radius * perimeter)"
             + System.lineSeparator()
-            + "Column6形状指数\t" + "basicShape * Math.sqrt(area)/ perimeter;"
+            + "Column8形状指数\t" + "basicShape(4.559) * Math.sqrt(area)/ perimeter;"
             + System.lineSeparator()
-            + "Column7分维数\t" + "2 * Math.log(perimeter / 4.0) / Math.log(area)"
+            + "Column9分维数\t" + "2 * Math.log(perimeter) / Math.log(area)"
             + System.lineSeparator()
-            + "Column8离散度\t" + System.lineSeparator()
+            + "Column10离散度\t" + System.lineSeparator()
 //        metadata.append("(10)面积×离散度2").append("\t");
-            + "Column9twoCenter距离\t" + "LatLon.greatCircleDistance(p1,p2).radians * Const.radius"
+            + "Column11twoCenter距离(3)\t" + "LatLon.greatCircleDistance(p1,p2).radians * Const.radius"
             + System.lineSeparator()
             // Neighbor cell的邻接距离
-            + "Column10边邻接距离\t" + "LatLon.greatCircleDistance(p1,p2).radians * Const.radius"
+            + "Column12边邻接距离\t(<=9)" + "LatLon.greatCircleDistance(p1,p2).radians * Const.radius"
             + System.lineSeparator()
-            + "Column11角邻接距离\t" + "LatLon.greatCircleDistance(p1,p2).radians * Const.radius"
+            + "Column13角邻接距离\t(3)" + "LatLon.greatCircleDistance(p1,p2).radians * Const.radius"
             + System.lineSeparator()
+
+            // column 1 id; column 2 qtmArea;column 3 plArea;
+            // column 4 innerAngle(3);column 5 edge(3);column 6 lineLength;
+            // column7 compactness; column 8 shapeIndex;column 9 dimension;
+            // column 10 dispersion;column 11 twoLineCenterDistances(3); column 12+13 nberDistances(<=12)
 
             // pointName
             + "\t" + pointName + ".txt" + System.lineSeparator()
@@ -74,15 +83,15 @@ public class QTMVariableAnalysis
 
         // calculation by metadata
         String fileName;
-        for (int level = 9; level < maxLevel; level++)
+        for (int level = 1; level < maxLevel; level++)
         {
 //            System.out.println("ForiLevel\t=\t" + level);
             System.gc();
-//            MidArcTriangleMesh triangleMesh = new MidArcTriangleMesh(level);
-            QTMTriangleMesh triangleMesh = new QTMTriangleMesh(level);
+            MidArcTriangleMesh triangleMesh = new MidArcTriangleMesh(level);
+//            QTMTriangleMesh triangleMesh = new QTMTriangleMesh(level);
 
-//            MidArcTriangleMesh mesh = triangleMesh.cutMesh();
-            QTMTriangleMesh mesh = triangleMesh.cutMesh();
+            MidArcTriangleMesh mesh = triangleMesh.cutMesh();
+//            QTMTriangleMesh mesh = triangleMesh.cutMesh();
 //            System.out.println(level);
             fileName = prefix + "_" + ((SurfaceTriangle) mesh.getCellNodes().get(0).getCell()).getGeocode().getBaseID()
                 + "_" + level;
@@ -94,7 +103,8 @@ public class QTMVariableAnalysis
             List<Mesh.CellNode> cellNodeList = mesh.getCellNodes();
             for (Mesh.CellNode nodeCell : cellNodeList)
             {
-                QTMTriangle qtmTriangle = (QTMTriangle) nodeCell.getCell();
+                MiddleArcSurfaceTriangle nodeTriangle = (MiddleArcSurfaceTriangle) nodeCell.getCell();
+//                QTMTriangle nodeTriangle = (QTMTriangle) nodeCell.getCell();
 
                 double area, plArea;
                 double edge1, edge2, edge3, perimeter;
@@ -105,31 +115,33 @@ public class QTMVariableAnalysis
                 double dispersion;//
 //                double areaMulDis2;//area*dispersion
 //                cellContents.append(triangle.getGeocode().getID()).append(System.lineSeparator());
-                // column 1
-                cellContents.append(qtmTriangle.getGeocode().getID()).append("\t\t");
-                // column 2
-                area = qtmTriangle.calculateCellArea(true);
+                // column 1 id
+                cellContents.append(nodeTriangle.getGeocode().getID()).append("\t\t");
+                // column 2 qtmArea
+//                area = nodeTriangle.calculateCellArea(true);
+                area = Area.sphericalTriangleArea(nodeTriangle.getTop(),nodeTriangle.getLeft(),nodeTriangle.getRight());
 
 //                cellContents.append("L2\t").append(area).append(System.lineSeparator());
                 cellContents.append(IO.formatDouble(area, Const.PRECISION)).append("\t\t");
-                // column 3
 
-                plArea = Area.planeTriangleArea(qtmTriangle.getTop(), qtmTriangle.getLeft(), qtmTriangle.getRight());
+                // column 3 plArea
+                plArea = Area.planeTriangleArea(nodeTriangle.getTop(), nodeTriangle.getLeft(), nodeTriangle.getRight());
                 cellContents.append(IO.formatDouble(plArea, Const.PRECISION)).append("\t\t");
 
-                // 内角 column 4
-                cellContents.append(IO.formatDouble(qtmTriangle.innerAngle().get(0).degrees, Const.PRECISION)).append(
+                // 内角 column 4 innerAngle
+                cellContents.append(IO.formatDouble(nodeTriangle.innerAngle().get(0).degrees, Const.PRECISION)).append(
                     "\t");
-                cellContents.append(IO.formatDouble(qtmTriangle.innerAngle().get(1).degrees, Const.PRECISION)).append(
+                cellContents.append(IO.formatDouble(nodeTriangle.innerAngle().get(1).degrees, Const.PRECISION)).append(
                     "\t");
-                cellContents.append(IO.formatDouble(qtmTriangle.innerAngle().get(2).degrees, Const.PRECISION)).append(
+                cellContents.append(IO.formatDouble(nodeTriangle.innerAngle().get(2).degrees, Const.PRECISION)).append(
                     "\t\t");
 
-                // column 5
+                // column 5 edge
+                //
                 // 根据不同的剖分方法，使用不同的计算方法
-                edge1 = qtmTriangle.edgeLengths().get(0);
-                edge2 = qtmTriangle.edgeLengths().get(1);
-                edge3 = qtmTriangle.edgeLengths().get(2);
+                edge1 = nodeTriangle.edgeLengths().get(0);
+                edge2 = nodeTriangle.edgeLengths().get(1);
+                edge3 = nodeTriangle.edgeLengths().get(2);
                 perimeter = edge1 + edge2 + edge3;
 //                cellContents.append("L3\t").append(edge1).append("\t");
                 cellContents.append(IO.formatDouble(edge1)).append("\t");
@@ -137,35 +149,43 @@ public class QTMVariableAnalysis
 //                cellContents.append(edge3).append(System.lineSeparator());
                 cellContents.append(IO.formatDouble(edge3)).append("\t\t");
                 //cellContents.append(IO.formatDouble(perimeter)).append("\t");
-                // column 6
-                pla = Length.calculateLineLength(qtmTriangle.getLeft(), qtmTriangle.getRight());
-                plb = Length.calculateLineLength(qtmTriangle.getTop(), qtmTriangle.getRight());
-                plc = Length.calculateLineLength(qtmTriangle.getLeft(), qtmTriangle.getTop());
+
+                // column 6 lineLength(plEdge)
+
+                pla = Length.calculateLineLength(nodeTriangle.getLeft(), nodeTriangle.getRight());
+                plb = Length.calculateLineLength(nodeTriangle.getTop(), nodeTriangle.getRight());
+                plc = Length.calculateLineLength(nodeTriangle.getLeft(), nodeTriangle.getTop());
                 cellContents.append(IO.formatDouble(pla)).append("\t");
                 cellContents.append(IO.formatDouble(plb)).append("\t");
                 cellContents.append(IO.formatDouble(plc)).append("\t\t");
-                // column7
+
+                // column7 compactness
+
                 // compactness = sqrt(4*PI*A-(A/r)^2)/P;
                 compactness = Math.sqrt(4 * Math.PI * area - Math.pow(area / Const.RADIUS, 2)) / perimeter;
 //                compactness = Math.sqrt(4 * Math.PI * Math.pow(Const.RADIUS, 2.0) * area - Math.pow(area, 2.0)) / Math.pow(
 //                    Const.RADIUS * perimeter, 2.0);
 ////                cellContents.append("L4\t").append(IO.formatDouble(compactness)).append(System.lineSeparator());
                 cellContents.append(IO.formatDouble(compactness)).append("\t\t");
-//                shapeIndex = perimeter / shape / Math.sqrt(area);
-                shapeIndex = basicShape * Math.sqrt(area) / perimeter;
+//                column 8 shapeIndex = perimeter / shape / Math.sqrt(area);
+
+                shapeIndex = 4.559 * Math.sqrt(area) / perimeter;
 //                cellContents.append("L5\t").append(IO.formatDouble(shapeIndex)).append(System.lineSeparator());
                 cellContents.append(IO.formatDouble(shapeIndex)).append("\t\t");
-//                dimension = 2 * Math.log(perimeter / 4.0) / Math.log(area);
+//                column 9 dimension = 2 * Math.log(perimeter / 4.0) / Math.log(area);
+
                 dimension = 2 * Math.log(perimeter) / Math.log(area);
 //                cellContents.append("L6\t").append(IO.formatDouble(dimension)).append(System.lineSeparator());
                 cellContents.append(IO.formatDouble(dimension)).append("\t\t");
 
                 List<Vec4> vertices = new ArrayList<>();
-                vertices.add(IO.check(IO.latLonToVec4(qtmTriangle.getTop())));
-                vertices.add(IO.check(IO.latLonToVec4(qtmTriangle.getLeft())));
-                vertices.add(IO.check(IO.latLonToVec4(qtmTriangle.getRight())));
+                vertices.add(IO.check(IO.latLonToVec4(nodeTriangle.getTop())));
+                vertices.add(IO.check(IO.latLonToVec4(nodeTriangle.getLeft())));
+                vertices.add(IO.check(IO.latLonToVec4(nodeTriangle.getRight())));
                 SphereStatisticsPoint sPoints = new SphereStatisticsPoint(vertices);
-//                dispersion = sPoints.getDispersionInUnit();
+
+//                column 10 dispersion = sPoints.getDispersionInUnit();
+
                 dispersion = sPoints.getDispersion();
 //                cellContents.append("L7\t").append(IO.formatDouble(dispersion, 6)).append(System.lineSeparator());
                 cellContents.append(IO.formatDouble(dispersion)).append("\t\t");
@@ -173,7 +193,7 @@ public class QTMVariableAnalysis
 //                cellContents.append(IO.formatDouble(areaMulDis2, 6)).append("\t");
 
                 // 邻近cell的质心距离
-                LatLon triangleCenter = qtmTriangle.getCenter();
+                LatLon triangleCenter = nodeTriangle.getCenter();
                 List<Mesh.Neighbor> neighborList = nodeCell.getNeighborList();
                 List<Double> nearAngleDistances = new ArrayList<>();
                 List<Double> nearEdgeDistances = new ArrayList<>();
@@ -181,9 +201,10 @@ public class QTMVariableAnalysis
                 List<Double> twoLineCenterDistances = new ArrayList<>();
                 List<LatLon> edgeCenters = new ArrayList<>();
 
-                edgeCenters.add(LatLon.interpolateGreatCircle(0.5, qtmTriangle.getTop(), qtmTriangle.getLeft()));
-                edgeCenters.add(LatLon.interpolateGreatCircle(0.5, qtmTriangle.getTop(), qtmTriangle.getRight()));
-                edgeCenters.add(LatLon.interpolateGreatCircle(0.5, qtmTriangle.getLeft(), qtmTriangle.getRight()));
+                edgeCenters.add(LatLon.interpolateGreatCircle(0.5, nodeTriangle.getTop(), nodeTriangle.getLeft()));
+                edgeCenters.add(LatLon.interpolateGreatCircle(0.5, nodeTriangle.getTop(), nodeTriangle.getRight()));
+                // edgeCenters.add(LatLon.interpolateGreatCircle(0.5, nodeTriangle.getLeft(), nodeTriangle.getRight()));
+                edgeCenters.add(LatLon.interpolateRhumb(0.5, nodeTriangle.getLeft(), nodeTriangle.getRight()));
 
                 for (Mesh.Neighbor aNber :
                     neighborList)
@@ -214,6 +235,11 @@ public class QTMVariableAnalysis
                             LatLon.greatCircleDistance(triangleCenter, nearCenter).radians * Const.RADIUS);
                     }
                 }
+                // column 11 twoLineCenterDistances
+
+//                cellContents.append(IO.check(twoLineCenterDistances.get(0),Const.PRECISION));
+//                cellContents.append(IO.check(twoLineCenterDistances.get(1),Const.PRECISION));
+//                cellContents.append(IO.check(twoLineCenterDistances.get(2),Const.PRECISION));
                 /** 12邻近
                  int length = nberDistances.size();
                  for (int i = 0; i < 12 - length; i++)
@@ -225,6 +251,8 @@ public class QTMVariableAnalysis
                  cellContents.append(IO.formatDouble(nberDistances.get(i))).append("\t");
                  }
                  **/
+                // column 11, column 12 nberDistances
+
                 if (twoLineCenterDistances.size() != 0)
                 {
 //                    cellContents.append("L10\t");
